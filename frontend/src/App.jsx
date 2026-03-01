@@ -144,7 +144,7 @@ function ItineraryPlanner({ lang, darkMode }) {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("http://localhost:5000/api/itinerary", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/itinerary`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ days, interests, travelWith, extraNote, lang }),
@@ -299,7 +299,7 @@ export default function App() {
     setMessages(prev => [...prev, { role: "user", text: userText }]);
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/chat", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userText, sessionId, lang }),
