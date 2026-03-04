@@ -669,6 +669,7 @@ function AccomFilter({ lang }) {
   const [maxPrice, setMaxPrice]       = useState(5000);
   const [typeFilter, setTypeFilter]   = useState([]);
   const [locFilter, setLocFilter]     = useState([]);
+  const [collapsed, setCollapsed]     = useState(false);
   const toggleArr = (arr,set,val) => set(p=>p.includes(val)?p.filter(x=>x!==val):[...p,val]);
 
   const filtered = ACCOMMODATIONS.filter(a=>
@@ -689,6 +690,11 @@ function AccomFilter({ lang }) {
         </div>
         <div className="accom-layout">
           <div className="accom-filters">
+            <div className="filter-collapse-header" onClick={()=>setCollapsed(p=>!p)}>
+              <span>🔍 {L$(lang,"ตัวกรอง","Filters","筛选")}</span>
+              <span style={{fontSize:"0.75rem"}}>{collapsed?"▼ แสดง":"▲ ซ่อน"}</span>
+            </div>
+            {!collapsed && <>
             <div className="filter-section">
               <div className="filter-title">💰 {L$(lang,"งบสูงสุด/คืน","Max/night","最高/晚")}</div>
               <input type="range" min={400} max={5000} step={100} value={maxPrice} onChange={e=>setMaxPrice(+e.target.value)} className="price-slider"/>
@@ -713,6 +719,7 @@ function AccomFilter({ lang }) {
             <button className="clear-filter-btn" onClick={()=>{setTypeFilter([]);setLocFilter([]);setMaxPrice(5000);}}>
               🔄 {L$(lang,"รีเซ็ต","Reset","重置")}
             </button>
+            </>}
           </div>
           <div className="accom-results">
             <div className="results-count">{L$(lang,`พบ ${filtered.length} ที่พัก`,`${filtered.length} properties found`,`找到 ${filtered.length} 家`)}</div>
