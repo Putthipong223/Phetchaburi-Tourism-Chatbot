@@ -91,15 +91,24 @@ html.dark {
 
 .sidebar-bottom { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.08); padding: 8px 0; }
 
-.lang-selector-side { position: relative; }
-.lang-dropdown {
-  position: absolute; bottom: 100%; left: 8px; right: 8px;
-  background: #1e4d35; border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 10px; overflow: hidden; z-index: 200; box-shadow: var(--shadow-md);
+.lang-selector-side { position: relative; padding: 4px 8px; }
+.lang-select-wrap {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.08); border-radius: 10px;
+  padding: 8px 12px; cursor: pointer;
 }
-.lang-opt { display: block; width: 100%; padding: 9px 14px; background: none; border: none; color: rgba(255,255,255,0.8); font-family: 'Sarabun', sans-serif; font-size: 0.85rem; cursor: pointer; text-align: left; transition: background var(--transition); }
-.lang-opt:hover { background: rgba(255,255,255,0.1); }
-.lang-opt.active { color: white; font-weight: 700; background: rgba(255,255,255,0.12); }
+.lang-select-icon { font-size: 1.1rem; }
+.lang-select-native {
+  flex: 1; background: transparent; border: none; color: white;
+  font-family: 'Sarabun', sans-serif; font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; outline: none;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.6)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  padding-right: 16px;
+}
+.lang-select-native option { background: #1e4d35; color: white; }
 
 .sidebar-icons { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0; }
 .icon-btn { width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.08); border-radius: 10px; font-size: 1.1rem; cursor: pointer; transition: background var(--transition); display: flex; align-items: center; justify-content: center; }
@@ -293,22 +302,44 @@ html.dark .quota-notice p { color: #d4a800; }
   /* ── Layout ── */
   .sidebar { display: none !important; }
   .dashboard { flex-direction: column; }
-  .main-area { width: 100vw; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; padding-top: 0; }
 
-  /* ── Topbar: Claude-style ── */
+  /* Use 100svh (small viewport = accounts for browser chrome on all mobile browsers)
+     Fallback chain: svh → dvh → vh */
+  .main-area {
+    width: 100vw;
+    height: 100svh;
+    height: 100dvh; /* overrides if svh not supported */
+    display: flex; flex-direction: column;
+    overflow: hidden; padding-top: 0;
+  }
+
+  /* ── Topbar: stays in flex flow (NOT fixed) — fixes Chrome+Safari overlap ── */
   .topbar {
+    position: relative;
+    z-index: 300;
     height: calc(52px + env(safe-area-inset-top, 0px));
     padding-top: env(safe-area-inset-top, 0px);
     padding-left: 6px;
     padding-right: 4px;
     border-bottom: 1px solid rgba(30,77,53,0.08);
-    background: white;
-    position: relative;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: height 0.25s ease, padding-top 0.25s ease, opacity 0.25s ease;
+    will-change: height;
+    flex-shrink: 0;
   }
-  html.dark .topbar { background: #141f16; }
+  html.dark .topbar { background: rgba(20,31,22,0.97); }
+
+  /* shrink when scrolling down */
+  .topbar.topbar-shrink {
+    height: calc(38px + env(safe-area-inset-top, 0px));
+    padding-top: calc(env(safe-area-inset-top, 0px) * 0.5);
+    opacity: 0.92;
+  }
 
   /* hamburger — show on mobile */
   .mob-hamburger {
@@ -422,14 +453,22 @@ html.dark .quota-notice p { color: #d4a800; }
   .quick-menu-bar::-webkit-scrollbar { display: none; }
   .qm-chip { white-space: nowrap; flex-shrink: 0; font-size: 0.74rem; padding: 6px 12px; }
 
-  /* ── Input section — Claude style ── */
+  /* ── Input section — in flex flow (NOT fixed) — works on all browsers ── */
   .input-section {
+    position: relative;
     flex-shrink: 0;
     padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
-    background: white;
-    border-top: none;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(30,77,53,0.08);
   }
-  html.dark .input-section { background: #141f16; }
+  html.dark .input-section { background: rgba(20,31,22,0.97); }
+
+  /* messages-area normal padding (input is in flex flow now) */
+  .messages-area {
+    padding-bottom: 12px !important;
+  }
 
   .input-box {
     border-radius: 26px;
@@ -455,6 +494,11 @@ html.dark .quota-notice p { color: #d4a800; }
     flex-shrink: 0;
   }
   .input-hint { display: none; }
+/* Topbar shrink — hide secondary elements */
+.topbar.topbar-shrink .mob-hamburger { opacity: 0.7; }
+.topbar.topbar-shrink .mob-title { font-size: 0.85rem; }
+.topbar.topbar-shrink .new-chat-btn-top .btn-label-pc { display: none; }
+
 
   /* place cards */
   .place-card { width: 158px; }
@@ -544,6 +588,18 @@ html.dark .quota-notice p { color: #d4a800; }
 .mob-drawer-icon { font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0; }
 
 .mob-drawer-history { display: flex; align-items: center; }
+.mob-lang-select-wrap {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1); border-radius: 10px;
+  padding: 8px 12px; margin: 4px 0;
+}
+.mob-lang-icon { font-size: 1.1rem; }
+.mob-lang-select {
+  flex: 1; background: transparent; border: none; color: white;
+  font-family: 'Sarabun', sans-serif; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; outline: none; appearance: auto; -webkit-appearance: auto;
+}
+.mob-lang-select option { background: #1e4d35; color: white; }
 .mob-hist-load { flex: 1; }
 .mob-hist-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.83rem; }
 .mob-hist-del {
@@ -984,3 +1040,35 @@ html.dark .admin-pass-input { background: #12201a; color: #c8e6c9; border-color:
   }
   .welcome-chip { text-align: center; justify-content: center; }
 }
+
+/* ══════════════════════════════════════════
+   NARROW PC / TABLET (769px – 1024px)
+   topbar shrinks on scroll like mobile
+   ══════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .topbar {
+    transition: height 0.25s ease, opacity 0.25s ease;
+  }
+  .topbar.topbar-shrink {
+    height: calc(var(--topbar-h) * 0.72);
+    opacity: 0.93;
+  }
+}
+
+/* ── Welcome nav row (quick links to features) ── */
+.welcome-nav-row {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 24px; flex-wrap: wrap;
+}
+.welcome-nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 12px 20px; border: 1.5px solid rgba(30,77,53,0.15);
+  border-radius: 14px; background: rgba(30,77,53,0.04);
+  color: var(--forest-mid); cursor: pointer; font-family: 'Sarabun', sans-serif;
+  font-size: 0.8rem; font-weight: 600; transition: all var(--transition);
+  min-width: 80px;
+}
+.welcome-nav-btn:hover { background: rgba(30,77,53,0.1); border-color: var(--forest-light); }
+.welcome-nav-btn span:first-child { font-size: 1.4rem; }
+html.dark .welcome-nav-btn { border-color: rgba(255,255,255,0.1); color: #74c69d; }
+html.dark .welcome-nav-btn:hover { background: rgba(255,255,255,0.08); }

@@ -851,7 +851,6 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab]     = useState("chat");
   const [showQuickMenu, setShowQuickMenu] = useState(true);
-  const [showLangMenu, setShowLangMenu]   = useState(false);
   const [showAdmin, setShowAdmin]         = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessions, setSessions]           = useState(()=>loadSessions());
@@ -862,6 +861,21 @@ export default function App() {
   const [loading, setLoading]   = useState(false);
   const [sessionId]             = useState(()=>`session_${Date.now()}`);
   const bottomRef = useRef(null);
+  const messagesRef = useRef(null);
+  const [topbarShrink, setTopbarShrink] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(()=>{
+    const el = messagesRef.current;
+    if (!el) return;
+    const onScroll = ()=>{
+      const y = el.scrollTop;
+      setTopbarShrink(y > 60 && y > lastScrollY.current);
+      lastScrollY.current = y;
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return ()=>el.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(()=>{ if(!autoNight)return; const i=setInterval(()=>setDarkMode(isNightTime()),60000); return ()=>clearInterval(i); },[autoNight]);
   useEffect(()=>{ document.documentElement.classList.toggle("dark",darkMode); },[darkMode]);
@@ -958,18 +972,14 @@ export default function App() {
           <div className="sidebar-bottom">
             <div className="sidebar-section-label">{L$(lang,"การตั้งค่า","Settings","设置")}</div>
             <div className="lang-selector-side">
-              <button className="nav-item" onClick={()=>setShowLangMenu(s=>!s)}>
-                <span>{LANGS[lang].label.split(" ")[0]}</span>
-                <span className="nav-label">{LANGS[lang].label.split(" ")[1]} ▾</span>
-              </button>
-              {showLangMenu&&(
-                <div className="lang-dropdown">
+              <div className="lang-select-wrap">
+                <span className="lang-select-icon">{LANGS[lang].label.split(" ")[0]}</span>
+                <select className="lang-select-native" value={lang} onChange={e=>setLang(e.target.value)}>
                   {Object.values(LANGS).map(l=>(
-                    <button key={l.code} className={`lang-opt ${lang===l.code?"active":""}`}
-                      onClick={()=>{setLang(l.code);setShowLangMenu(false);}}>{l.label}</button>
+                    <option key={l.code} value={l.code}>{l.label}</option>
                   ))}
-                </div>
-              )}
+                </select>
+              </div>
             </div>
             <button className="nav-item" onClick={()=>{setAutoNight(false);setDarkMode(d=>!d);}}>
               <span>{darkMode?"☀️":"🌙"}</span><span className="nav-label">{darkMode?"Light Mode":"Dark Mode"}</span>
@@ -994,7 +1004,7 @@ export default function App() {
 
       {/* ── MAIN ── */}
       <main className="main-area">
-        <header className="topbar">
+        <header className={`topbar${topbarShrink?" topbar-shrink":""}`}>
           {/* PC left */}
           <div className="topbar-left">
             <span className="topbar-title">{NAV_ICONS[activeTab]||"💬"} {activeTab==="chat"?L.chatTab:activeTab==="planner"?L.plannerTab:activeTab==="festival"?(lang==="th"?"เทศกาล":lang==="zh"?"节庆":"Festivals"):(lang==="th"?"ที่พัก":lang==="zh"?"住宿":"Stays")}</span>
@@ -1017,7 +1027,7 @@ export default function App() {
 
         {activeTab==="chat" ? (
           <div className="chat-layout">
-            <div className="messages-area">
+            <div className="messages-area" ref={messagesRef}>
               {isWelcome&&(
                 <div className="welcome-screen">
                   <div className="welcome-avatar">🌿</div>
@@ -1025,6 +1035,18 @@ export default function App() {
                   <p>{L$(lang,"ไกด์ท่องเที่ยว AI สำหรับจังหวัดเพชรบุรี","AI Tourism Guide for Phetchaburi","碧武里AI旅游向导")}</p>
                   <div className="welcome-chips">
                     {L.suggestions.map((q,i)=><button key={i} className="welcome-chip" onClick={()=>sendMessage(q)}>{q}</button>)}
+                  </div>
+                  <div className="welcome-nav-row">
+                    {[
+                      {id:"planner",icon:"📚",th:"จัดทริป",en:"Plan Trip",zh:"规划行程"},
+                      {id:"festival",icon:"🎪",th:"เทศกาล",en:"Festivals",zh:"节庆"},
+                      {id:"accom",icon:"🏨",th:"ที่พัก",en:"Stays",zh:"住宿"},
+                    ].map(t=>(
+                      <button key={t.id} className="welcome-nav-btn" onClick={()=>setActiveTab(t.id)}>
+                        <span>{t.icon}</span>
+                        <span>{L$(lang,t.th,t.en,t.zh)}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -1138,11 +1160,14 @@ export default function App() {
               <button className="mob-setting-btn" onClick={()=>setDarkMode(d=>!d)}>
                 {darkMode?"☀️":"🌙"} {darkMode?L$(lang,"โหมดสว่าง","Light","浅色"):L$(lang,"โหมดมืด","Dark","深色")}
               </button>
-              {["th","en","zh"].map(l=>(
-                <button key={l} className={`mob-setting-btn ${lang===l?"active":""}`} onClick={()=>setLang(l)}>
-                  {l==="th"?"🇹🇭 ไทย":l==="en"?"🇬🇧 EN":"🇨🇳 中"}
-                </button>
-              ))}
+              <div className="mob-lang-select-wrap">
+                <span className="mob-lang-icon">{LANGS[lang].label.split(" ")[0]}</span>
+                <select className="mob-lang-select" value={lang} onChange={e=>setLang(e.target.value)}>
+                  {Object.values(LANGS).map(l=>(
+                    <option key={l.code} value={l.code}>{l.label}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </aside>
         </div>
