@@ -670,6 +670,14 @@ function AccomFilter({ lang }) {
   const [typeFilter, setTypeFilter]   = useState([]);
   const [locFilter, setLocFilter]     = useState([]);
   const [collapsed, setCollapsed]     = useState(false);
+  const pageRef = React.useRef(null);
+  React.useEffect(()=>{
+    const el = pageRef.current;
+    if (!el) return;
+    const onScroll = () => { if (el.scrollTop > 60) setCollapsed(true); };
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
   const toggleArr = (arr,set,val) => set(p=>p.includes(val)?p.filter(x=>x!==val):[...p,val]);
 
   const filtered = ACCOMMODATIONS.filter(a=>
@@ -682,7 +690,7 @@ function AccomFilter({ lang }) {
   const LOCS  = { city:{icon:"🏙️",th:"ในเมือง",en:"City Center",zh:"市中心"}, beach:{icon:"🏖️",th:"ริมทะเล",en:"Beachfront",zh:"海滨"}, mountain:{icon:"🏔️",th:"ใกล้อุทยาน",en:"Near Park",zh:"近公园"} };
 
   return (
-    <div className="accom-page">
+    <div className="accom-page" ref={pageRef}>
       <div className="accom-inner">
         <div className="accom-hero">
           <h2>🏨 {L$(lang,"ค้นหาที่พักในเพชรบุรี","Find Stays in Phetchaburi","碧武里住宿搜索")}</h2>
@@ -845,7 +853,6 @@ export default function App() {
   const [showQuickMenu, setShowQuickMenu] = useState(true);
   const [showLangMenu, setShowLangMenu]   = useState(false);
   const [showAdmin, setShowAdmin]         = useState(false);
-  const [showQuickLinks, setShowQuickLinks] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessions, setSessions]           = useState(()=>loadSessions());
   const L = LANGS[lang];
@@ -922,20 +929,6 @@ export default function App() {
             ))}
           </nav>
 
-          {/* Quick links — collapsible */}
-          <button className="sidebar-section-label collapsible-label" onClick={()=>setShowQuickLinks(s=>!s)}>
-            <span>{L$(lang,"เมนูด่วน","Quick Links","快捷菜单")}</span>
-            <span className="collapse-arrow">{showQuickLinks?"▾":"▸"}</span>
-          </button>
-          {showQuickLinks && (
-            <nav className="sidebar-nav">
-              {L.sidebarItems.map((item,i)=>(
-                <button key={i} className="nav-item" onClick={()=>sendMessage(item.msg)}>
-                  <span>{item.icon}</span><span className="nav-label">{item.label}</span>
-                </button>
-              ))}
-            </nav>
-          )}
 
           {/* Session history (Feature 6) */}
           {sessions.length>0&&(<>
@@ -1122,15 +1115,6 @@ export default function App() {
               </button>
             ))}
 
-            {/* Quick links */}
-            <div className="mob-drawer-section">{L$(lang,"เมนูด่วน","Quick Links","快捷")}</div>
-            {L.sidebarItems.slice(0,6).map((item,i)=>(
-              <button key={i} className="mob-drawer-item"
-                onClick={()=>{setActiveTab("chat");sendMessage(item.msg);setMobileMenuOpen(false);}}>
-                <span className="mob-drawer-icon">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
 
             {/* History */}
             {sessions.length>0&&(<>

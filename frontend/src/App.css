@@ -493,7 +493,7 @@ html.dark .quota-notice p { color: #d4a800; }
 
 .mob-drawer-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 16px 12px;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 16px 12px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   flex-shrink: 0;
 }
