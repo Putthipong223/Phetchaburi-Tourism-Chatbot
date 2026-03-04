@@ -839,6 +839,7 @@ export default function App() {
   const [showLangMenu, setShowLangMenu]   = useState(false);
   const [showAdmin, setShowAdmin]         = useState(false);
   const [showQuickLinks, setShowQuickLinks] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessions, setSessions]           = useState(()=>loadSessions());
   const L = LANGS[lang];
 
@@ -994,17 +995,23 @@ export default function App() {
       {/* ── MAIN ── */}
       <main className="main-area">
         <header className="topbar">
+          {/* PC left */}
           <div className="topbar-left">
             <span className="topbar-title">{NAV_ICONS[activeTab]||"💬"} {activeTab==="chat"?L.chatTab:activeTab==="planner"?L.plannerTab:activeTab==="festival"?(lang==="th"?"เทศกาล":lang==="zh"?"节庆":"Festivals"):(lang==="th"?"ที่พัก":lang==="zh"?"住宿":"Stays")}</span>
             {activeTab==="chat"&&autoNight&&darkMode&&<span className="night-pill">🌙 Auto Dark</span>}
           </div>
+          {/* Mobile: hamburger left + title center + new-chat right */}
+          <button className="mob-hamburger" onClick={()=>setMobileMenuOpen(true)} aria-label="Menu">
+            <span/><span/><span/>
+          </button>
+          <span className="mob-title">🌿 น้องเพชร</span>
           <div className="topbar-right">
             {activeTab==="chat"&&(
               <button className="qm-toggle-btn" onClick={()=>setShowQuickMenu(s=>!s)}>
                 {showQuickMenu?L.hideMenu:L.showMenu}
               </button>
             )}
-            <button className="new-chat-btn-top" onClick={newChat}>✏️ {L.newChat}</button>
+            <button className="new-chat-btn-top" onClick={newChat}>✏️ <span className="btn-label-pc">{L.newChat}</span></button>
           </div>
         </header>
 
@@ -1078,39 +1085,77 @@ export default function App() {
 
       {showAdmin&&<AdminDashboard onClose={()=>setShowAdmin(false)}/>}
 
-      {/* ── MOBILE BOTTOM NAV ── */}
-      <nav className="mobile-nav">
-        <button className={`mobile-nav-btn ${activeTab==="chat"?"active":""}`}
-          onClick={()=>setActiveTab("chat")}>
-          <span className="mnb-icon">💬</span>
-          <span>{L$(lang,"แชท","Chat","聊天")}</span>
-          <span className="mnb-dot"/>
-        </button>
-        <button className={`mobile-nav-btn`}
-          onClick={newChat}>
-          <span className="mnb-icon">✏️</span>
-          <span>{L$(lang,"ใหม่","New","新建")}</span>
-          <span className="mnb-dot"/>
-        </button>
-        <button className={`mobile-nav-btn ${activeTab==="planner"?"active":""}`}
-          onClick={()=>setActiveTab("planner")}>
-          <span className="mnb-icon">📚</span>
-          <span>{L$(lang,"จัดทริป","Plan","行程")}</span>
-          <span className="mnb-dot"/>
-        </button>
-        <button className={`mobile-nav-btn ${activeTab==="festival"?"active":""}`}
-          onClick={()=>setActiveTab("festival")}>
-          <span className="mnb-icon">🎪</span>
-          <span>{L$(lang,"เทศกาล","Events","节庆")}</span>
-          <span className="mnb-dot"/>
-        </button>
-        <button className={`mobile-nav-btn ${activeTab==="accom"?"active":""}`}
-          onClick={()=>setActiveTab("accom")}>
-          <span className="mnb-icon">🏨</span>
-          <span>{L$(lang,"ที่พัก","Stay","住宿")}</span>
-          <span className="mnb-dot"/>
-        </button>
-      </nav>
+      {/* ── MOBILE DRAWER (Claude-style slide-in) ── */}
+      {mobileMenuOpen&&(
+        <div className="mob-overlay" onClick={()=>setMobileMenuOpen(false)}>
+          <aside className="mob-drawer" onClick={e=>e.stopPropagation()}>
+            {/* Drawer header */}
+            <div className="mob-drawer-header">
+              <span className="mob-drawer-brand">🌿 น้องเพชร</span>
+              <button className="mob-drawer-close" onClick={()=>setMobileMenuOpen(false)}>✕</button>
+            </div>
+
+            {/* New chat */}
+            <button className="mob-new-chat" onClick={()=>{newChat();setMobileMenuOpen(false);}}>
+              ✏️ {L.newChat}
+            </button>
+
+            {/* Nav items */}
+            <div className="mob-drawer-section">{L$(lang,"เมนูหลัก","Navigation","导航")}</div>
+            {[
+              {id:"chat",    icon:"💬", th:"แชท",     en:"Chat",      zh:"聊天"},
+              {id:"planner", icon:"📚", th:"จัดทริป",  en:"Plan Trip", zh:"行程规划"},
+              {id:"festival",icon:"🎪", th:"เทศกาล",   en:"Festivals", zh:"节庆"},
+              {id:"accom",   icon:"🏨", th:"ที่พัก",   en:"Stays",     zh:"住宿"},
+            ].map(t=>(
+              <button key={t.id} className={`mob-drawer-item ${activeTab===t.id?"active":""}`}
+                onClick={()=>{setActiveTab(t.id);setMobileMenuOpen(false);}}>
+                <span className="mob-drawer-icon">{t.icon}</span>
+                <span>{L$(lang,t.th,t.en,t.zh)}</span>
+              </button>
+            ))}
+
+            {/* Quick links */}
+            <div className="mob-drawer-section">{L$(lang,"เมนูด่วน","Quick Links","快捷")}</div>
+            {L.sidebarItems.slice(0,6).map((item,i)=>(
+              <button key={i} className="mob-drawer-item"
+                onClick={()=>{setActiveTab("chat");sendMessage(item.msg);setMobileMenuOpen(false);}}>
+                <span className="mob-drawer-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            ))}
+
+            {/* History */}
+            {sessions.length>0&&(<>
+              <div className="mob-drawer-section">{L$(lang,"ประวัติแชท","History","历史")}</div>
+              {sessions.slice(0,5).map(sess=>(
+                <div key={sess.id} className="mob-drawer-history">
+                  <button className="mob-drawer-item mob-hist-load"
+                    onClick={()=>{setMessages(sess.messages);setActiveTab("chat");setMobileMenuOpen(false);}}>
+                    <span className="mob-drawer-icon">💬</span>
+                    <span className="mob-hist-title">{sess.title}</span>
+                  </button>
+                  <button className="mob-hist-del"
+                    onClick={()=>{if(window.confirm("ลบ?")){deleteSession(sess.id);setSessions(loadSessions());}}}>✕</button>
+                </div>
+              ))}
+            </>)}
+
+            {/* Settings */}
+            <div className="mob-drawer-section">{L$(lang,"ตั้งค่า","Settings","设置")}</div>
+            <div className="mob-drawer-settings">
+              <button className="mob-setting-btn" onClick={()=>setDarkMode(d=>!d)}>
+                {darkMode?"☀️":"🌙"} {darkMode?L$(lang,"โหมดสว่าง","Light","浅色"):L$(lang,"โหมดมืด","Dark","深色")}
+              </button>
+              {["th","en","zh"].map(l=>(
+                <button key={l} className={`mob-setting-btn ${lang===l?"active":""}`} onClick={()=>setLang(l)}>
+                  {l==="th"?"🇹🇭 ไทย":l==="en"?"🇬🇧 EN":"🇨🇳 中"}
+                </button>
+              ))}
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
