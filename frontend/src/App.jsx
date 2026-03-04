@@ -877,6 +877,25 @@ export default function App() {
     return ()=>el.removeEventListener('scroll', onScroll);
   }, []);
 
+  // ── Mobile viewport height fix (Safari/Chrome address bar) ──
+  useEffect(()=>{
+    const setAppH = ()=>{
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-h', h+'px');
+    };
+    setAppH();
+    window.visualViewport?.addEventListener('resize', setAppH);
+    window.visualViewport?.addEventListener('scroll', setAppH);
+    window.addEventListener('resize', setAppH);
+    window.addEventListener('orientationchange', setAppH);
+    return ()=>{
+      window.visualViewport?.removeEventListener('resize', setAppH);
+      window.visualViewport?.removeEventListener('scroll', setAppH);
+      window.removeEventListener('resize', setAppH);
+      window.removeEventListener('orientationchange', setAppH);
+    };
+  }, []);
+
   useEffect(()=>{ if(!autoNight)return; const i=setInterval(()=>setDarkMode(isNightTime()),60000); return ()=>clearInterval(i); },[autoNight]);
   useEffect(()=>{ document.documentElement.classList.toggle("dark",darkMode); },[darkMode]);
   useEffect(()=>{ setMessages([{role:"bot",text:LANGS[lang].welcome}]); },[lang]);
