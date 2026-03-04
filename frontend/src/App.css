@@ -463,7 +463,7 @@ html.dark .quota-notice p { color: #d4a800; }
 /* ── PC: hide mobile-only elements ── */
 .mob-hamburger { display: none; }
 .mob-title { display: none; }
-.mob-overlay { display: none; }
+/* mob-overlay renders conditionally via JSX — no display:none needed */
 
 /* ══════════════════════════════════════════
    MOBILE DRAWER — Claude-style slide-in
