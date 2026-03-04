@@ -1077,6 +1077,40 @@ export default function App() {
       </main>
 
       {showAdmin&&<AdminDashboard onClose={()=>setShowAdmin(false)}/>}
+
+      {/* ── MOBILE BOTTOM NAV ── */}
+      <nav className="mobile-nav">
+        <button className={`mobile-nav-btn ${activeTab==="chat"?"active":""}`}
+          onClick={()=>setActiveTab("chat")}>
+          <span className="mnb-icon">💬</span>
+          <span>{L$(lang,"แชท","Chat","聊天")}</span>
+          <span className="mnb-dot"/>
+        </button>
+        <button className={`mobile-nav-btn`}
+          onClick={newChat}>
+          <span className="mnb-icon">✏️</span>
+          <span>{L$(lang,"ใหม่","New","新建")}</span>
+          <span className="mnb-dot"/>
+        </button>
+        <button className={`mobile-nav-btn ${activeTab==="planner"?"active":""}`}
+          onClick={()=>setActiveTab("planner")}>
+          <span className="mnb-icon">📚</span>
+          <span>{L$(lang,"จัดทริป","Plan","行程")}</span>
+          <span className="mnb-dot"/>
+        </button>
+        <button className={`mobile-nav-btn ${activeTab==="festival"?"active":""}`}
+          onClick={()=>setActiveTab("festival")}>
+          <span className="mnb-icon">🎪</span>
+          <span>{L$(lang,"เทศกาล","Events","节庆")}</span>
+          <span className="mnb-dot"/>
+        </button>
+        <button className={`mobile-nav-btn ${activeTab==="accom"?"active":""}`}
+          onClick={()=>setActiveTab("accom")}>
+          <span className="mnb-icon">🏨</span>
+          <span>{L$(lang,"ที่พัก","Stay","住宿")}</span>
+          <span className="mnb-dot"/>
+        </button>
+      </nav>
     </div>
   );
 }
