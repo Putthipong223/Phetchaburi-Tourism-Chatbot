@@ -670,8 +670,8 @@ function AccomFilter({ lang }) {
   const [typeFilter, setTypeFilter]   = useState([]);
   const [locFilter, setLocFilter]     = useState([]);
   const [collapsed, setCollapsed]     = useState(false);
-  const pageRef = React.useRef(null);
-  React.useEffect(()=>{
+  const pageRef = useRef(null);
+  useEffect(()=>{
     const el = pageRef.current;
     if (!el) return;
     const onScroll = () => { if (el.scrollTop > 60) setCollapsed(true); };

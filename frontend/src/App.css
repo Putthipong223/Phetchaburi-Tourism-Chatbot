@@ -479,13 +479,14 @@ html.dark .quota-notice p { color: #d4a800; }
 @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
 
 .mob-drawer {
-  position: absolute; top: 0; left: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; bottom: 0;
   width: min(300px, 82vw);
   background: var(--forest);
   display: flex; flex-direction: column;
   overflow-y: auto;
   animation: slideInDrawer 0.25s cubic-bezier(0.4,0,0.2,1);
   box-shadow: 4px 0 24px rgba(0,0,0,0.25);
+  z-index: 600;
 }
 @keyframes slideInDrawer { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 .mob-drawer::-webkit-scrollbar { width: 3px; }
