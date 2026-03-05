@@ -204,7 +204,19 @@ html.dark .bubble h4 { color: #52b788; }
 .input-section { flex-shrink: 0; padding: 0 24px 16px; background: white; border-top: 1px solid rgba(30,77,53,0.07); }
 html.dark .input-section { background: #141f16; border-top-color: rgba(255,255,255,0.06); }
 
-.quick-menu-bar { display: flex; flex-wrap: wrap; gap: 7px; padding: 12px 0 8px; border-bottom: 1px dashed rgba(30,77,53,0.1); margin-bottom: 10px; }
+.quick-menu-bar {
+  display: flex;
+  flex-wrap: nowrap;          /* บรรทัดเดียวเท่านั้น */
+  overflow-x: auto;           /* เลื่อนซ้าย-ขวาถ้าล้น */
+  -webkit-overflow-scrolling: touch;
+  gap: 7px;
+  padding: 10px 0 8px;
+  border-bottom: 1px dashed rgba(30,77,53,0.1);
+  margin-bottom: 10px;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE/Edge */
+}
+.quick-menu-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 html.dark .quick-menu-bar { border-bottom-color: rgba(255,255,255,0.07); }
 .qm-chip { padding: 6px 14px; background: var(--forest-pale); border: 1.5px solid rgba(30,77,53,0.12); border-radius: 20px; font-family: 'Sarabun', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--forest-mid); cursor: pointer; transition: all var(--transition); white-space: nowrap; }
 .qm-chip:hover { background: var(--forest); color: white; border-color: var(--forest); transform: translateY(-1px); }
