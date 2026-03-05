@@ -850,7 +850,7 @@ export default function App() {
   const [autoNight, setAutoNight]     = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab]     = useState("chat");
-  const [showQuickMenu, setShowQuickMenu] = useState(true);
+  const [showQuickMenu, setShowQuickMenu] = useState(()=>localStorage.getItem('qmHidden')!=='1');
   const [showAdmin, setShowAdmin]         = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessions, setSessions]           = useState(()=>loadSessions());
@@ -1009,16 +1009,16 @@ export default function App() {
           </div>
         </>)}
 
-        {!sidebarOpen&&(
-          <div className="sidebar-icons">
-            <button className="icon-btn" onClick={newChat}>✏️</button>
-            <button className={`icon-btn ${activeTab==="chat"?"active":""}`}     onClick={()=>setActiveTab("chat")}>💬</button>
-            <button className={`icon-btn ${activeTab==="planner"?"active":""}`}  onClick={()=>setActiveTab("planner")}>📚</button>
-            <button className={`icon-btn ${activeTab==="festival"?"active":""}`} onClick={()=>setActiveTab("festival")}>🎪</button>
-            <button className={`icon-btn ${activeTab==="accom"?"active":""}`}    onClick={()=>setActiveTab("accom")}>🏨</button>
-            <button className="icon-btn" onClick={()=>{setAutoNight(false);setDarkMode(d=>!d);}}>{darkMode?"☀️":"🌙"}</button>
-          </div>
-        )}
+      {/* Floating expand tab when sidebar is closed */}
+      {!sidebarOpen&&(
+        <div className="sidebar-float-tab">
+          <button className="sft-expand" onClick={()=>setSidebarOpen(true)} title="เปิดเมนู">▶</button>
+          <button className="sft-lang" onClick={()=>{
+            const codes=Object.keys(LANGS);
+            setLang(codes[(codes.indexOf(lang)+1)%codes.length]);
+          }} title="เปลี่ยนภาษา">🌐</button>
+        </div>
+      )}
       </aside>
 
       {/* ── MAIN ── */}
@@ -1036,7 +1036,7 @@ export default function App() {
           <span className="mob-title">🌿 น้องเพชร</span>
           <div className="topbar-right">
             {activeTab==="chat"&&(
-              <button className="qm-toggle-btn" onClick={()=>setShowQuickMenu(s=>!s)}>
+              <button className="qm-toggle-btn" onClick={()=>setShowQuickMenu(s=>{ localStorage.setItem('qmHidden', s?'1':'0'); return !s; })}>
                 {showQuickMenu?L.hideMenu:L.showMenu}
               </button>
             )}
@@ -1079,6 +1079,7 @@ export default function App() {
                   {L.quickMenu.map((item,i)=>(
                     <button key={i} className="qm-chip" onClick={()=>sendMessage(item.msg)}>{item.icon} {item.label}</button>
                   ))}
+                  <button className="qm-close-btn" onClick={()=>{setShowQuickMenu(false);localStorage.setItem('qmHidden','1');}} title="ซ่อน">✕</button>
                 </div>
               )}
               <div className="input-box">
