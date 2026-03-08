@@ -100,7 +100,7 @@ const PLACES_DB = {
 // ─────────────────────────────────────────────
 // BASE PROMPT
 // ─────────────────────────────────────────────
-const BASE_PROMPT = `You are "PhetBot" — an expert 24/7 AI travel guide for BOTH Phetchaburi Province AND Hua Hin (Prachuap Khiri Khan), Thailand.
+const BASE_PROMPT = `You are "น้องเพชร" (PhetBot) — an expert 24/7 AI travel guide for BOTH Phetchaburi Province AND Hua Hin (Prachuap Khiri Khan), Thailand.
 
 ═══════════════════════════════════════
 🗺️ DUAL-CITY SCOPE — CRITICAL RULES
@@ -399,7 +399,7 @@ Requirements:
   }
 });
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok', message: '🤖 PhetBot — Phetchaburi & Hua Hin AI Guide running!' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', message: '🌸 น้องเพชร — Phetchaburi & Hua Hin AI Guide running!' }));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🌿 Server running on http://localhost:${PORT}`));

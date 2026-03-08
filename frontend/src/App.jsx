@@ -176,7 +176,7 @@ function deleteSession(id) {
 const LANGS = {
   th: {
     code:"th", label:"🇹🇭 ไทย",
-    placeholder:"ถาม PhetBot เรื่องเพชรบุรี–หัวหิน...",
+    placeholder:"ถามน้องเพชรเรื่องเพชรบุรี–หัวหิน...",
     welcome:"สวัสดีค่ะ! ฉันคือ **PhetBot** 🤖 ผู้ช่วย AI ท่องเที่ยวเพชรบุรี–หัวหิน ✨\n\nอยากรู้เรื่องที่เที่ยว 🏛️ ของกินอร่อย 🍽️ ที่พัก 🏨 การเดินทาง 🚗 ความปลอดภัย 🛡️ หรือวัฒนธรรม 🎎 ถามได้เลยนะคะ!",
     newChat:"แชทใหม่", errorMsg:"❌ เกิดข้อผิดพลาด กรุณาตรวจสอบ Server และลองใหม่นะคะ",
     quotaMsg:"⚠️ ขณะนี้ AI ให้บริการเกินโควต้าต่อวันแล้วค่ะ 😔\n\nกรุณาลองใหม่อีกครั้งในวันพรุ่งนี้ค่ะ 🙏",
@@ -395,7 +395,7 @@ function CompareTable({ data, lang }) {
 function TypingIndicator() {
   return (
     <div className="message bot-message typing">
-      <div className="msg-avatar bot-avatar"><img src={PHETBOT_LOGO} alt="PhetBot"/></div>
+      <div className="msg-avatar bot-avatar"><img src={PHETBOT_LOGO} alt="น้องเพชร"/></div>
       <div className="bubble"><span className="dot"/><span className="dot"/><span className="dot"/></div>
     </div>
   );
@@ -943,8 +943,8 @@ export default function App() {
       <aside className="sidebar">
         <div className="sidebar-top">
           <div className="sidebar-brand">
-            <img src={PHETBOT_LOGO} alt="PhetBot" className="brand-logo-img"/>
-            {sidebarOpen&&<span className="brand-name">PhetBot</span>}
+            <img src={PHETBOT_LOGO} alt="น้องเพชร" className="brand-logo-img"/>
+            {sidebarOpen&&<span className="brand-name">น้องเพชร</span>}
           </div>
           <button className="sidebar-toggle" onClick={()=>setSidebarOpen(s=>!s)}>{sidebarOpen?"◀":"▶"}</button>
         </div>
@@ -1037,7 +1037,7 @@ export default function App() {
           <button className="mob-hamburger" onClick={()=>setMobileMenuOpen(true)} aria-label="Menu">
             <span/><span/><span/>
           </button>
-          <span className="mob-title"><img src={PHETBOT_LOGO} alt="" className="mob-logo-img"/>PhetBot</span>
+          <span className="mob-title"><img src={PHETBOT_LOGO} alt="" className="mob-logo-img"/>น้องเพชร</span>
           <div className="topbar-right">
             {activeTab==="chat"&&(
               <button className="qm-toggle-btn" onClick={()=>setShowQuickMenu(s=>{ localStorage.setItem('qmHidden', s?'1':'0'); return !s; })}>
@@ -1053,8 +1053,8 @@ export default function App() {
             <div className="messages-area" ref={messagesRef}>
               {isWelcome&&(
                 <div className="welcome-screen">
-                  <div className="welcome-avatar"><img src={PHETBOT_LOGO} alt="PhetBot" className="welcome-logo-img"/></div>
-                  <h1>{L$(lang,"สวัสดีค่ะ! ฉันคือ PhetBot","Hello! I'm PhetBot","您好！我是 PhetBot")}</h1>
+                  <div className="welcome-avatar"><img src={PHETBOT_LOGO} alt="น้องเพชร" className="welcome-logo-img"/></div>
+                  <h1>{L$(lang,"สวัสดีค่ะ! ฉันคือน้องเพชร","Hello! I'm Nong Phet","您好！我是小碧")}</h1>
                   <p>{L$(lang,"ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน","AI Tourism Guide for Phetchaburi","碧武里AI旅游向导")}</p>
                   <div className="welcome-chips">
                     {L.suggestions.map((q,i)=><button key={i} className="welcome-chip" onClick={()=>sendMessage(q)}>{q}</button>)}
@@ -1137,7 +1137,7 @@ export default function App() {
           <aside className="mob-drawer" onClick={e=>e.stopPropagation()}>
             {/* Drawer header */}
             <div className="mob-drawer-header">
-              <span className="mob-drawer-brand">PhetBot</span>
+              <span className="mob-drawer-brand">น้องเพชร</span>
               <button className="mob-drawer-close" onClick={()=>setMobileMenuOpen(false)}>✕</button>
             </div>
 
