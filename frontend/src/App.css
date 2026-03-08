@@ -1235,4 +1235,46 @@ html.dark .qm-close-btn:hover { background: rgba(255,255,255,0.16); color: white
 /* Sidebar gradient override for dark */
 html.dark .sidebar { background: linear-gradient(135deg,#2d1b69 0%,#701a75 100%); }
 html.dark .sft-expand, html.dark .sft-lang { background: #5b21b6; }
+/* ── Emergency Card in Sidebar ── */
+.sidebar-emergency {
+  margin: 8px 12px 4px;
+  background: linear-gradient(135deg, rgba(220,38,38,0.12), rgba(239,68,68,0.08));
+  border: 1px solid rgba(220,38,38,0.25);
+  border-radius: 12px;
+  padding: 10px 10px 8px;
+}
+.emergency-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ef4444;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 7px;
+  padding: 0 2px;
+}
+.emergency-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  text-decoration: none;
+  margin-bottom: 4px;
+  transition: background 0.18s;
+  cursor: pointer;
+}
+.emergency-btn:hover { background: rgba(239,68,68,0.25); }
+.emergency-btn:last-child { margin-bottom: 0; }
+.e-icon { font-size: 1rem; flex-shrink: 0; }
+.emergency-btn span:last-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.e-label { font-size: 0.68rem; opacity: 0.8; }
+.e-num   { font-size: 0.9rem; font-weight: 700; color: #fca5a5; }
+html.dark .emergency-btn { background: rgba(255,255,255,0.05); }
+html.dark .emergency-btn:hover { background: rgba(239,68,68,0.30); }
 

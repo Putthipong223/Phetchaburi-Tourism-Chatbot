@@ -297,6 +297,7 @@ const LANGS = {
       {icon:"🎭",label:"กิจกรรม",msg:"กิจกรรมท่องเที่ยวน่าสนใจในเพชรบุรีและหัวหินมีอะไรบ้าง?"},
       {icon:"🎪",label:"เทศกาล",msg:"เทศกาลและงานประจำปีในเพชรบุรีและหัวหิน"},
       {icon:"💰",label:"คำนวณงบ",msg:"ช่วยประมาณค่าใช้จ่ายท่องเที่ยวเพชรบุรี–หัวหิน 2 วัน 1 คืน"},
+      {icon:"🚨",label:"เบอร์ฉุกเฉิน",msg:"เบอร์โทรฉุกเฉินและตำรวจท่องเที่ยวในเพชรบุรีและหัวหิน"},
     ],
     sidebarItems:[
       {icon:"🏛️",label:"สถานที่ท่องเที่ยว",msg:"แนะนำสถานที่ท่องเที่ยวทั้งหมดในเพชรบุรี"},
@@ -331,6 +332,7 @@ const LANGS = {
       {icon:"🎭",label:"Activities",msg:"Best activities and things to do in Phetchaburi & Hua Hin"},
       {icon:"🎪",label:"Festivals",msg:"Annual festivals and events in Phetchaburi and Hua Hin"},
       {icon:"💰",label:"Budget",msg:"Help me estimate travel costs for 2 days in Phetchaburi–Hua Hin"},
+      {icon:"🚨",label:"Emergency",msg:"Emergency numbers and tourist police contacts in Phetchaburi and Hua Hin"},
     ],
     sidebarItems:[
       {icon:"🏛️",label:"Attractions",msg:"All tourist attractions in Phetchaburi"},
@@ -365,6 +367,7 @@ const LANGS = {
       {icon:"🎭",label:"旅游活动",msg:"碧武里和华欣有哪些特色旅游活动？"},
       {icon:"🎪",label:"节日活动",msg:"碧武里和华欣有哪些年度节庆活动？"},
       {icon:"💰",label:"旅游预算",msg:"帮我估算1人在碧武里和华欣游玩2天的费用"},
+      {icon:"🚨",label:"紧急联系",msg:"碧武里和华欣的紧急求助电话和旅游警察联系方式"},
     ],
     sidebarItems:[
       {icon:"🏛️",label:"所有景点",msg:"碧武里所有旅游景点介绍"},
@@ -1084,6 +1087,32 @@ export default function App() {
               ))}
             </nav>
           </>)}
+
+          {/* Emergency Card */}
+          <div className="sidebar-emergency">
+            <div className="emergency-title">🚨 {L$(lang,"ฉุกเฉิน","Emergency","紧急求助")}</div>
+            <a href="tel:1155" className="emergency-btn">
+              <span className="e-icon">👮</span>
+              <span>
+                <span className="e-label">{L$(lang,"ตำรวจท่องเที่ยว","Tourist Police","旅游警察")}</span>
+                <span className="e-num">1155</span>
+              </span>
+            </a>
+            <a href="tel:191" className="emergency-btn">
+              <span className="e-icon">🚓</span>
+              <span>
+                <span className="e-label">{L$(lang,"ตำรวจ","Police","警察")}</span>
+                <span className="e-num">191</span>
+              </span>
+            </a>
+            <a href="tel:1669" className="emergency-btn">
+              <span className="e-icon">🚑</span>
+              <span>
+                <span className="e-label">{L$(lang,"พยาบาล","Ambulance","救护车")}</span>
+                <span className="e-num">1669</span>
+              </span>
+            </a>
+          </div>
 
           {/* Settings */}
           <div className="sidebar-bottom">
