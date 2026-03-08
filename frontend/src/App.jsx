@@ -1301,6 +1301,32 @@ export default function App() {
               ))}
             </>)}
 
+            {/* Emergency */}
+            <div className="mob-drawer-section mob-emergency-section">🚨 {L$(lang,"ฉุกเฉิน","Emergency","紧急求助")}</div>
+            <div className="mob-emergency-card">
+              <a href="tel:1155" className="mob-emergency-btn">
+                <span className="mob-e-icon">👮</span>
+                <span className="mob-e-info">
+                  <span className="mob-e-label">{L$(lang,"ตำรวจท่องเที่ยว","Tourist Police","旅游警察")}</span>
+                  <span className="mob-e-num">1155</span>
+                </span>
+              </a>
+              <a href="tel:191" className="mob-emergency-btn">
+                <span className="mob-e-icon">🚓</span>
+                <span className="mob-e-info">
+                  <span className="mob-e-label">{L$(lang,"ตำรวจ","Police","警察")}</span>
+                  <span className="mob-e-num">191</span>
+                </span>
+              </a>
+              <a href="tel:1669" className="mob-emergency-btn">
+                <span className="mob-e-icon">🚑</span>
+                <span className="mob-e-info">
+                  <span className="mob-e-label">{L$(lang,"พยาบาล","Ambulance","救护车")}</span>
+                  <span className="mob-e-num">1669</span>
+                </span>
+              </a>
+            </div>
+
             {/* Settings */}
             <div className="mob-drawer-section">{L$(lang,"ตั้งค่า","Settings","设置")}</div>
             <div className="mob-drawer-settings">

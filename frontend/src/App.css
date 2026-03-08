@@ -1277,4 +1277,33 @@ html.dark .sft-expand, html.dark .sft-lang { background: #5b21b6; }
 .e-num   { font-size: 0.9rem; font-weight: 700; color: #fca5a5; }
 html.dark .emergency-btn { background: rgba(255,255,255,0.05); }
 html.dark .emergency-btn:hover { background: rgba(239,68,68,0.30); }
+/* ── Mobile Drawer Emergency Card ── */
+.mob-emergency-section { color: #ef4444 !important; }
+.mob-emergency-card {
+  margin: 0 12px 8px;
+  background: linear-gradient(135deg, rgba(220,38,38,0.13), rgba(239,68,68,0.07));
+  border: 1px solid rgba(220,38,38,0.28);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mob-emergency-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  color: white;
+  text-decoration: none;
+  transition: background 0.18s;
+}
+.mob-emergency-btn:hover,
+.mob-emergency-btn:active { background: rgba(239,68,68,0.28); }
+.mob-e-icon { font-size: 1.2rem; flex-shrink: 0; }
+.mob-e-info { display: flex; flex-direction: column; line-height: 1.25; }
+.mob-e-label { font-size: 0.72rem; opacity: 0.8; color: #fecaca; }
+.mob-e-num   { font-size: 1.1rem; font-weight: 700; color: #fca5a5; letter-spacing: 0.03em; }
 
