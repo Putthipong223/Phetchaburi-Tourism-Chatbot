@@ -408,7 +408,7 @@ function Message({ msg, lang }) {
   const { html, cards, compareData } = parseContent(msg.text);
   return (
     <div className={`message ${msg.role==="user"?"user-message":"bot-message"}`}>
-      {msg.role==="bot" && <div className="msg-avatar">{msg.isQuota?"⚠️":"🌿"}</div>}
+      {msg.role==="bot" && <div className="msg-avatar">{msg.isQuota?"⚠️":""}</div>}
       <div className="msg-content">
         <div className={`bubble ${msg.isQuota?"quota-bubble":""}`} dangerouslySetInnerHTML={{__html:html}}/>
         {compareData && <CompareTable data={compareData} lang={lang}/>}
@@ -569,28 +569,28 @@ function AdminDashboard({ onClose }) {
       <tr style="background:${i%2===0?'#fff':'#f5fff8'}">
         <td style="padding:8px 14px;border-bottom:1px solid #e0f0e6;color:#999;text-align:center">${i+1}</td>
         <td style="padding:8px 14px;border-bottom:1px solid #e0f0e6;color:#1a2e1a">${item.query.replace(/</g,'&lt;')}</td>
-        <td style="padding:8px 14px;border-bottom:1px solid #e0f0e6;font-weight:700;color:#1e4d35;text-align:center">${item.count}</td>
+        <td style="padding:8px 14px;border-bottom:1px solid #ede9fe;font-weight:700;color:#7c3aed;text-align:center">${item.count}</td>
         <td style="padding:8px 14px;border-bottom:1px solid #e0f0e6;font-size:0.8rem;color:#666;text-align:center">${new Date(item.last).toLocaleDateString('th-TH')}</td>
       </tr>`).join('');
     const html = `<!DOCTYPE html><html lang="th"><head>
       <meta charset="UTF-8">
-      <title>FAQ Dashboard — น้องเพชร</title>
+      <title>FAQ Dashboard — PhetBot</title>
       <style>
         body{font-family:'Sarabun',sans-serif;padding:32px 40px;color:#1a2e1a;font-size:14px}
-        h1{color:#1e4d35;font-size:1.6rem;margin-bottom:4px}
+        h1{color:#7c3aed;font-size:1.6rem;margin-bottom:4px}
         .sub{color:#666;font-size:0.85rem;margin-bottom:20px}
         .stats{display:flex;gap:16px;margin-bottom:24px}
         .stat{background:#f0faf4;border-radius:10px;padding:14px 22px;text-align:center;border:1px solid #c8e6c9}
-        .stat-n{font-size:2rem;font-weight:700;color:#1e4d35;line-height:1}
+        .stat-n{font-size:2rem;font-weight:700;color:#7c3aed;line-height:1}
         .stat-l{font-size:0.72rem;color:#666;margin-top:4px}
         table{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;box-shadow:0 1px 8px rgba(30,77,53,0.08)}
-        thead tr{background:#1e4d35;color:white}
+        thead tr{background:#7c3aed;color:white}
         th{padding:10px 14px;text-align:left;font-size:0.85rem;font-weight:700}
         .footer{margin-top:20px;font-size:0.75rem;color:#999;text-align:center}
         @media print{body{padding:16px}}
       </style>
     </head><body>
-      <h1>📊 FAQ Dashboard — น้องเพชร</h1>
+      <h1>📊 FAQ Dashboard — PhetBot</h1>
       <div class="sub">Generated: ${new Date().toLocaleString('th-TH')} · ทั้งหมด ${faqData.length} คำถาม</div>
       <div class="stats">
         <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">จำนวน queries ทั้งหมด</div></div>
@@ -601,7 +601,7 @@ function AdminDashboard({ onClose }) {
         <thead><tr><th style="width:40px">#</th><th>คำถาม</th><th style="width:70px;text-align:center">ครั้ง</th><th style="width:110px;text-align:center">ล่าสุด</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <div class="footer">น้องเพชร AI Travel Guide — Phetchaburi Province</div>
+      <div class="footer">PhetBot — AI Travel Guide for Phetchaburi & Hua Hin</div>
     </body></html>`;
     const win = window.open('','_blank','width=900,height=700');
     if (!win) { alert('กรุณาอนุญาต popup แล้วลองใหม่'); return; }
@@ -1037,7 +1037,7 @@ export default function App() {
           <button className="mob-hamburger" onClick={()=>setMobileMenuOpen(true)} aria-label="Menu">
             <span/><span/><span/>
           </button>
-          <span className="mob-title">🌿 PhetBot</span>
+          <span className="mob-title"><img src={PHETBOT_LOGO} alt="" className="mob-logo-img"/>PhetBot</span>
           <div className="topbar-right">
             {activeTab==="chat"&&(
               <button className="qm-toggle-btn" onClick={()=>setShowQuickMenu(s=>{ localStorage.setItem('qmHidden', s?'1':'0'); return !s; })}>
@@ -1054,8 +1054,8 @@ export default function App() {
               {isWelcome&&(
                 <div className="welcome-screen">
                   <div className="welcome-avatar"><img src={PHETBOT_LOGO} alt="PhetBot" className="welcome-logo-img"/></div>
-                  <h1>{L$(lang,"สวัสดีค่ะ! ฉันคือน้องเพชร 🌿","Hello! I'm Nong Phet","您好！我是小碧")}</h1>
-                  <p>{L$(lang,"ไกด์ท่องเที่ยว AI สำหรับจังหวัดเพชรบุรี","AI Tourism Guide for Phetchaburi","碧武里AI旅游向导")}</p>
+                  <h1>{L$(lang,"สวัสดีค่ะ! ฉันคือ PhetBot","Hello! I'm PhetBot","您好！我是 PhetBot")}</h1>
+                  <p>{L$(lang,"ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน","AI Tourism Guide for Phetchaburi","碧武里AI旅游向导")}</p>
                   <div className="welcome-chips">
                     {L.suggestions.map((q,i)=><button key={i} className="welcome-chip" onClick={()=>sendMessage(q)}>{q}</button>)}
                   </div>
@@ -1137,7 +1137,7 @@ export default function App() {
           <aside className="mob-drawer" onClick={e=>e.stopPropagation()}>
             {/* Drawer header */}
             <div className="mob-drawer-header">
-              <span className="mob-drawer-brand">🌿 PhetBot</span>
+              <span className="mob-drawer-brand">PhetBot</span>
               <button className="mob-drawer-close" onClick={()=>setMobileMenuOpen(false)}>✕</button>
             </div>
 
