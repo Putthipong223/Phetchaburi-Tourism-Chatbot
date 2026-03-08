@@ -875,10 +875,54 @@ html.dark .accom-hero h2 { color:#c084fc; }
 .accom-hero p { color:var(--text-mid); font-size:0.85rem; margin-top:4px; }
 .accom-layout { display:grid; grid-template-columns:240px 1fr; gap:20px; align-items:start; }
 @media(max-width:800px){ .accom-layout { grid-template-columns:1fr; } .accom-filters { position:static; } }
-.accom-filters { background:white; border-radius:14px; padding:18px; border:1px solid rgba(91,33,182,0.08); display:flex; flex-direction:column; gap:14px; position:sticky; top:16px; }
-.filter-collapse-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; font-size:0.88rem; color:var(--forest); padding:2px 0; user-select:none; }
-.filter-collapse-header:hover { opacity:0.75; }
-html.dark .accom-filters { background:#1a2e1e; }
+.accom-filters {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: calc(var(--topbar-h) + 12px); /* stick just below main header */
+  z-index: 10;
+  transition: box-shadow 0.3s ease;
+}
+.accom-filters:focus-within,
+.accom-filters:hover { box-shadow: 0 4px 20px rgba(124,58,237,0.12); }
+.filter-collapse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--forest-mid);
+  padding: 2px 0;
+  user-select: none;
+}
+.filter-collapse-header:hover { opacity: 0.75; }
+/* Smooth expand/collapse of filter body */
+.filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 600px;
+  opacity: 1;
+}
+.filter-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+  gap: 0;
+}
+html.dark .accom-filters { background: rgba(26,16,58,0.85); border-color: rgba(168,85,247,0.18); }
+@media(max-width:800px){
+  .accom-filters { position: static; top: auto; }
+}
 .filter-section { display:flex; flex-direction:column; gap:6px; }
 .filter-title { font-size:0.76rem; font-weight:700; color:var(--forest); text-transform:uppercase; letter-spacing:0.5px; }
 html.dark .filter-title { color:#c084fc; }

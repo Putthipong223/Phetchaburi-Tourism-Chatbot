@@ -175,12 +175,48 @@ const MONTH_ZH_FULL = ["","一月","二月","三月","四月","五月","六月",
 // ACCOMMODATION DATA (เพชรบุรีเท่านั้น)
 // ══════════════════════════════════════════════
 const ACCOMMODATIONS = [
-  { id:1, name:"บ้านพักโฮมสเตย์ริมน้ำเพชร",     type:"homestay", location:"city",     price:400,  rating:4.2, image:"https://img2.pic.in.th/643396939_904572975672909_3528937264899095705_n.jpg", desc:"บรรยากาศชิลล์ริมแม่น้ำเพชรบุรี อาหารเช้ารวม เจ้าของใจดี", booking:"https://www.booking.com/searchresults.th.html?ss=Phetchaburi" },
-  { id:2, name:"เกสต์เฮ้าส์ใกล้เขาวัง",         type:"homestay", location:"city",     price:500,  rating:4.0, image:"https://img2.pic.in.th/20240513b953e516db409961bed1e969525ebdae082030.jpg", desc:"เดินถึงเขาวัง 10 นาที ราคาถูก ห้องสะอาด เหมาะนักเดินทาง", booking:"https://www.booking.com/searchresults.th.html?ss=Phetchaburi+Khao+Wang" },
-  { id:3, name:"โรงแรมริมเพชร",                  type:"hotel",    location:"city",     price:700,  rating:4.0, image:"https://upload.wikimedia.org/wikipedia/commons/3/32/WatMahathat.jpg", desc:"ใจกลางเมืองเพชรบุรี ใกล้ตลาด สะดวกเดินทางไปทุกที่", booking:"https://www.booking.com/searchresults.th.html?ss=Phetchaburi+city" },
-  { id:4, name:"Kaeng Krachan Camp & Resort",    type:"resort",   location:"mountain", price:1200, rating:4.6, image:"https://travel.mthai.com/app/uploads/2016/09/DSC_2356.jpg", desc:"ติดอุทยานแก่งกระจาน บรรยากาศธรรมชาติ ดูนกยามเช้า ทะเลหมอก", booking:"https://www.booking.com/searchresults.th.html?ss=Kaeng+Krachan" },
-  { id:5, name:"ชะอำ บีช รีสอร์ท",              type:"resort",   location:"beach",    price:1800, rating:4.3, image:"https://cbtthailand.dasta.or.th/upload-file-api/Resources/RelateAttraction/Images/RAT760040/2.jpeg", desc:"ติดหาดชะอำ สระว่ายน้ำ อาหารเช้าริมหาด วิวทะเลสวยงาม", booking:"https://www.booking.com/searchresults.th.html?ss=Cha+Am+Beach+Resort" },
-  { id:6, name:"โรงแรมชะอำเมทรินี่",            type:"hotel",    location:"beach",    price:2500, rating:4.4, image:"https://img2.pic.in.th/366880381.jpg", desc:"โรงแรมริมทะเลชะอำ สิ่งอำนวยความสะดวกครบ เหมาะครอบครัว", booking:"https://www.booking.com/searchresults.th.html?ss=Cha+Am+hotel" },
+  { id:1, type:"homestay", location:"city", price:400, rating:4.2,
+    image:"https://img2.pic.in.th/643396939_904572975672909_3528937264899095705_n.jpg",
+    booking:"https://www.booking.com/searchresults.th.html?ss=Phetchaburi",
+    name:"บ้านพักโฮมสเตย์ริมน้ำเพชร", nameEn:"Rim Phet Riverside Homestay", nameZh:"碧武里河畔民宿",
+    desc:"บรรยากาศชิลล์ริมแม่น้ำเพชรบุรี อาหารเช้ารวม เจ้าของใจดี",
+    descEn:"Relaxing riverside homestay on the Phetchaburi River. Breakfast included, friendly hosts.",
+    descZh:"碧武里河畔的惬意民宿，含早餐，房东热情友善。" },
+  { id:2, type:"homestay", location:"city", price:500, rating:4.0,
+    image:"https://img2.pic.in.th/20240513b953e516db409961bed1e969525ebdae082030.jpg",
+    booking:"https://www.booking.com/searchresults.th.html?ss=Phetchaburi+Khao+Wang",
+    name:"เกสต์เฮ้าส์ใกล้เขาวัง", nameEn:"Guesthouse near Khao Wang", nameZh:"考旺山附近民宿",
+    desc:"เดินถึงเขาวัง 10 นาที ราคาถูก ห้องสะอาด เหมาะนักเดินทาง",
+    descEn:"10-minute walk to Khao Wang palace. Affordable, clean rooms, great for backpackers.",
+    descZh:"步行10分钟可达考旺宫，价格实惠，房间整洁，适合背包客。" },
+  { id:3, type:"hotel", location:"city", price:700, rating:4.0,
+    image:"https://upload.wikimedia.org/wikipedia/commons/3/32/WatMahathat.jpg",
+    booking:"https://www.booking.com/searchresults.th.html?ss=Phetchaburi+city",
+    name:"โรงแรมริมเพชร", nameEn:"Rim Phet Hotel", nameZh:"碧武里中心酒店",
+    desc:"ใจกลางเมืองเพชรบุรี ใกล้ตลาด สะดวกเดินทางไปทุกที่",
+    descEn:"Located in the heart of Phetchaburi city, near markets and all major attractions.",
+    descZh:"位于碧武里市中心，紧邻市场，出行便利。" },
+  { id:4, type:"resort", location:"mountain", price:1200, rating:4.6,
+    image:"https://travel.mthai.com/app/uploads/2016/09/DSC_2356.jpg",
+    booking:"https://www.booking.com/searchresults.th.html?ss=Kaeng+Krachan",
+    name:"Kaeng Krachan Camp & Resort", nameEn:"Kaeng Krachan Camp & Resort", nameZh:"凯恩格拉占营地度假村",
+    desc:"ติดอุทยานแก่งกระจาน บรรยากาศธรรมชาติ ดูนกยามเช้า ทะเลหมอก",
+    descEn:"Adjacent to Kaeng Krachan National Park. Nature vibes, morning birdwatching, sea of mist.",
+    descZh:"毗邻凯恩格拉占国家公园，自然氛围浓郁，可早起观鸟、欣赏云海。" },
+  { id:5, type:"resort", location:"beach", price:1800, rating:4.3,
+    image:"https://cbtthailand.dasta.or.th/upload-file-api/Resources/RelateAttraction/Images/RAT760040/2.jpeg",
+    booking:"https://www.booking.com/searchresults.th.html?ss=Cha+Am+Beach+Resort",
+    name:"ชะอำ บีช รีสอร์ท", nameEn:"Cha-am Beach Resort", nameZh:"七岩海滩度假村",
+    desc:"ติดหาดชะอำ สระว่ายน้ำ อาหารเช้าริมหาด วิวทะเลสวยงาม",
+    descEn:"Beachfront resort at Cha-am. Pool, breakfast by the sea, stunning ocean views.",
+    descZh:"七岩海滩正对面，含泳池和海边早餐，海景壮观。" },
+  { id:6, type:"hotel", location:"beach", price:2500, rating:4.4,
+    image:"https://img2.pic.in.th/366880381.jpg",
+    booking:"https://www.booking.com/searchresults.th.html?ss=Cha+Am+hotel",
+    name:"โรงแรมชะอำเมทรินี่", nameEn:"Cha-am Methavalai Hotel", nameZh:"七岩梅沙瓦莱酒店",
+    desc:"โรงแรมริมทะเลชะอำ สิ่งอำนวยความสะดวกครบ เหมาะครอบครัว",
+    descEn:"Full-amenity beachside hotel at Cha-am, perfect for families.",
+    descZh:"七岩海边全设施酒店，非常适合家庭出行。" },
 ];
 
 // ══════════════════════════════════════════════
@@ -739,14 +775,7 @@ function AccomFilter({ lang }) {
   const [typeFilter, setTypeFilter]   = useState([]);
   const [locFilter, setLocFilter]     = useState([]);
   const [collapsed, setCollapsed]     = useState(false);
-  const pageRef = useRef(null);
-  useEffect(()=>{
-    const el = pageRef.current;
-    if (!el) return;
-    const onScroll = () => { if (el.scrollTop > 60) setCollapsed(true); };
-    el.addEventListener('scroll', onScroll);
-    return () => el.removeEventListener('scroll', onScroll);
-  }, []);
+
   const toggleArr = (arr,set,val) => set(p=>p.includes(val)?p.filter(x=>x!==val):[...p,val]);
 
   const filtered = ACCOMMODATIONS.filter(a=>
@@ -759,7 +788,7 @@ function AccomFilter({ lang }) {
   const LOCS  = { city:{icon:"🏙️",th:"ในเมือง",en:"City Center",zh:"市中心"}, beach:{icon:"🏖️",th:"ริมทะเล",en:"Beachfront",zh:"海滨"}, mountain:{icon:"🏔️",th:"ใกล้อุทยาน",en:"Near Park",zh:"近公园"} };
 
   return (
-    <div className="accom-page" ref={pageRef}>
+    <div className="accom-page">
       <div className="accom-inner">
         <div className="accom-hero">
           <h2>🏨 {L$(lang,"ค้นหาที่พักในเพชรบุรี","Find Stays in Phetchaburi","碧武里住宿搜索")}</h2>
@@ -769,9 +798,9 @@ function AccomFilter({ lang }) {
           <div className="accom-filters">
             <div className="filter-collapse-header" onClick={()=>setCollapsed(p=>!p)}>
               <span>🔍 {L$(lang,"ตัวกรอง","Filters","筛选")}</span>
-              <span style={{fontSize:"0.75rem"}}>{collapsed?"▼ แสดง":"▲ ซ่อน"}</span>
+              <span style={{fontSize:"0.75rem"}}>{collapsed?L$(lang,"▼ แสดง","▼ Show","▼ 展开"):L$(lang,"▲ ซ่อน","▲ Hide","▲ 收起")}</span>
             </div>
-            {!collapsed && <>
+            <div className={`filter-body${collapsed?" collapsed":""}`}>
             <div className="filter-section">
               <div className="filter-title">💰 {L$(lang,"งบสูงสุด/คืน","Max/night","最高/晚")}</div>
               <input type="range" min={400} max={5000} step={100} value={maxPrice} onChange={e=>setMaxPrice(+e.target.value)} className="price-slider"/>
@@ -796,7 +825,7 @@ function AccomFilter({ lang }) {
             <button className="clear-filter-btn" onClick={()=>{setTypeFilter([]);setLocFilter([]);setMaxPrice(5000);}}>
               🔄 {L$(lang,"รีเซ็ต","Reset","重置")}
             </button>
-            </>}
+            </div>
           </div>
           <div className="accom-results">
             <div className="results-count">{L$(lang,`พบ ${filtered.length} ที่พัก`,`${filtered.length} properties found`,`找到 ${filtered.length} 家`)}</div>
@@ -814,10 +843,10 @@ function AccomFilter({ lang }) {
                     </div>
                     <div className="accom-card-body">
                       <div className="accom-card-header">
-                        <h4 className="accom-name">{a.name}</h4>
+                        <h4 className="accom-name">{lang==="zh"?a.nameZh:lang==="en"?a.nameEn:a.name}</h4>
                         <div className="accom-rating">⭐ {a.rating}</div>
                       </div>
-                      <p className="accom-desc">{a.desc}</p>
+                      <p className="accom-desc">{lang==="zh"?a.descZh:lang==="en"?a.descEn:a.desc}</p>
                       <div className="accom-price">฿{a.price.toLocaleString()}<span>{L$(lang,"/คืน","/night","/晚")}</span></div>
                       <div className="accom-btns">
                         
