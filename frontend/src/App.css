@@ -233,18 +233,18 @@ html.dark .qm-chip { background: #1a2e1e; color: #c084fc; border-color: rgba(116
 html.dark .qm-chip:hover { background: var(--forest); color: white; }
 
 .input-box {
-  display: flex; gap: 10px; align-items: flex-end;
+  display: flex; gap: 10px; align-items: center;
   background: var(--forest-bg); border: 2px solid rgba(91,33,182,0.15);
   border-radius: 16px; padding: 10px 10px 10px 18px;
   transition: border-color var(--transition), box-shadow var(--transition);
 }
-.input-box:focus-within { border-color: var(--forest-light); box-shadow: 0 0 0 3px rgba(64,145,108,0.12); }
-html.dark .input-box { background: #1a2e1e; border-color: rgba(116,198,157,0.15); }
-html.dark .input-box:focus-within { border-color: #a855f7; box-shadow: 0 0 0 3px rgba(82,183,136,0.1); }
-.input-box textarea { flex: 1; border: none; background: none; resize: none; font-family: 'Sarabun', sans-serif; font-size: 0.95rem; color: var(--text-dark); outline: none; max-height: 140px; line-height: 1.6; padding: 0; }
+.input-box:focus-within { border-color: var(--forest-light); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); }
+html.dark .input-box { background: #1a103a; border-color: rgba(168,85,247,0.20); }
+html.dark .input-box:focus-within { border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168,85,247,0.15); }
+.input-box textarea { flex: 1; border: none; background: none; resize: none; font-family: 'Sarabun', sans-serif; font-size: 0.95rem; color: var(--text-dark); outline: none; max-height: 140px; min-height: 24px; line-height: 1.6; padding: 0; align-self: center; display: block; }
 .input-box textarea::placeholder { color: var(--text-muted); }
 html.dark .input-box textarea { color: #ede9fe; }
-html.dark .input-box textarea::placeholder { color: #6b21a8; }
+html.dark .input-box textarea::placeholder { color: #a78bfa; }
 .send-btn { width: 40px; height: 40px; background: var(--forest); color: white; border: none; border-radius: 12px; font-size: 1rem; cursor: pointer; transition: all var(--transition); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .send-btn:hover:not(:disabled) { background: var(--forest-mid); transform: scale(1.05); }
 .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }

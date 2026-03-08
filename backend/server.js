@@ -301,7 +301,26 @@ app.post('/api/chat', async (req, res) => {
     const sid = sessionId || 'default';
     if (!sessions[sid]) sessions[sid] = [];
 
-    const systemInstruction = BASE_PROMPT + (LANG_PROMPTS[lang] || LANG_PROMPTS.th);
+    // Inject current date/time so AI knows the real season
+    const now = new Date();
+    const thMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    const enMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const zhMonths = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    const dateContext = `
+
+══════════════════════════════════════
+📅 CURRENT DATE (use this for all season/time advice)
+══════════════════════════════════════
+Today: ${enMonths[month]} ${year} / ${thMonths[month]} ${year} / ${zhMonths[month]}${year}年
+Current season in Phetchaburi: ${
+      month >= 10 || month <= 1 ? 'Cool/Dry Season (หน้าหนาว) — Best time to visit! 18–28°C, sea of mist, birdwatching peak' :
+      month >= 2 && month <= 4 ? 'Hot Season (หน้าร้อน) — Great for beaches, Khao Chae season, 30–38°C' :
+      'Rainy/Green Season (หน้าฝน) — Lush nature, cheaper prices, some flooding possible, 26–34°C'
+    }
+IMPORTANT: Always give advice based on the current month (${enMonths[month]}), NOT generic advice. If asked about "now" or "this month", use ${enMonths[month]} ${year}.`;
+    const systemInstruction = BASE_PROMPT + dateContext + (LANG_PROMPTS[lang] || LANG_PROMPTS.th);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction });
     const chat = model.startChat({ history: sessions[sid] });
     const result = await chat.sendMessage(message);
