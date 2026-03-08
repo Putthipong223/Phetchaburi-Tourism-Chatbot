@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import "./App.css";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const PHETBOT_LOGO = "/Phetbot_No_bg.png";
 
 // ══════════════════════════════════════════════
 // PLACES DB (with GPS coords)
@@ -175,8 +176,8 @@ function deleteSession(id) {
 const LANGS = {
   th: {
     code:"th", label:"🇹🇭 ไทย",
-    placeholder:"ถามน้องเพชรเรื่องเพชรบุรี...",
-    welcome:"สวัสดีค่ะ! 🌿 ฉันชื่อ **น้องเพชร** ไกด์ท่องเที่ยวสำหรับจังหวัดเพชรบุรีโดยเฉพาะเลยค่ะ ✨\n\nอยากรู้เรื่องที่เที่ยว 🏛️ ของกินอร่อย 🍽️ ที่พักสวยๆ 🏨 หรือวิธีเดินทาง 🚗 ถามได้เลยนะคะ ไม่ต้องเกรงใจเลยจ้า!",
+    placeholder:"ถาม PhetBot เรื่องเพชรบุรี–หัวหิน...",
+    welcome:"สวัสดีค่ะ! ฉันคือ **PhetBot** 🤖 ผู้ช่วย AI ท่องเที่ยวเพชรบุรี–หัวหิน ✨\n\nอยากรู้เรื่องที่เที่ยว 🏛️ ของกินอร่อย 🍽️ ที่พัก 🏨 การเดินทาง 🚗 ความปลอดภัย 🛡️ หรือวัฒนธรรม 🎎 ถามได้เลยนะคะ!",
     newChat:"แชทใหม่", errorMsg:"❌ เกิดข้อผิดพลาด กรุณาตรวจสอบ Server และลองใหม่นะคะ",
     quotaMsg:"⚠️ ขณะนี้ AI ให้บริการเกินโควต้าต่อวันแล้วค่ะ 😔\n\nกรุณาลองใหม่อีกครั้งในวันพรุ่งนี้ค่ะ 🙏",
     plannerTab:"จัดทริป", chatTab:"แชท",
@@ -186,14 +187,15 @@ const LANGS = {
     interestOptions:["🏔️ ภูเขา/ป่า","🏖️ ทะเล/ชายหาด","🏛️ ประวัติศาสตร์","🍽️ อาหาร/ของฝาก","🌅 พระอาทิตย์ตก","🦜 ดูนก"],
     travelOptions:["คนเดียว","คู่รัก","ครอบครัว","เพื่อนกลุ่ม"],
     quickMenu:[
-      {icon:"📸",label:"สถานที่ถ่ายรูป",msg:"แนะนำสถานที่ถ่ายรูปสวยๆ ในเพชรบุรี"},
-      {icon:"🍜",label:"ของกินยอดนิยม",msg:"ของกินยอดนิยมในเพชรบุรีมีอะไรบ้าง แนะนำร้านด้วยนะ?"},
-      {icon:"🏨",label:"ที่พักแนะนำ",msg:"แนะนำที่พักในเพชรบุรีตามงบประมาณ"},
-      {icon:"🚨",label:"เบอร์ฉุกเฉิน",msg:"เบอร์โทรฉุกเฉินและโรงพยาบาลในเพชรบุรี"},
-      {icon:"🎭",label:"กิจกรรม",msg:"กิจกรรมเชิงวัฒนธรรมในเพชรบุรีมีอะไรบ้าง?"},
-      {icon:"👔",label:"มารยาทวัด",msg:"การแต่งกายเข้าวัดและมารยาทสำคัญในเพชรบุรี"},
-      {icon:"💰",label:"คำนวณงบ",msg:"ช่วยประมาณค่าใช้จ่ายเที่ยวเพชรบุรี 2 วัน 1 คืน"},
-      {icon:"🎪",label:"เทศกาล",msg:"เทศกาลและงานประจำปีในเพชรบุรีมีอะไรบ้าง?"},
+      {icon:"🏛️",label:"ที่เที่ยวแนะนำ",msg:"แนะนำสถานที่ท่องเที่ยวในเพชรบุรีและหัวหิน มีที่ไหนน่าไปบ้าง?"},
+      {icon:"🍜",label:"ของกินยอดนิยม",msg:"ของกินยอดนิยมและร้านอาหารแนะนำในเพชรบุรี–หัวหิน"},
+      {icon:"🚌",label:"เดินทางยังไง",msg:"วิธีเดินทางจากกรุงเทพไปเพชรบุรีและหัวหิน มีกี่ทาง?"},
+      {icon:"🌤️",label:"ช่วงไหนดีที่สุด",msg:"ช่วงเวลาที่เหมาะสมที่สุดในการท่องเที่ยวเพชรบุรีและหัวหิน"},
+      {icon:"📸",label:"สถานที่ถ่ายรูป",msg:"แนะนำจุดถ่ายรูปยอดนิยมและ check-in สวยๆ ในเพชรบุรี–หัวหิน"},
+      {icon:"🏨",label:"ที่พักแนะนำ",msg:"แนะนำที่พักในเพชรบุรีและหัวหินตามงบประมาณ"},
+      {icon:"🎭",label:"กิจกรรม",msg:"กิจกรรมท่องเที่ยวน่าสนใจในเพชรบุรีและหัวหินมีอะไรบ้าง?"},
+      {icon:"🎪",label:"เทศกาล",msg:"เทศกาลและงานประจำปีในเพชรบุรีและหัวหิน"},
+      {icon:"💰",label:"คำนวณงบ",msg:"ช่วยประมาณค่าใช้จ่ายท่องเที่ยวเพชรบุรี–หัวหิน 2 วัน 1 คืน"},
     ],
     sidebarItems:[
       {icon:"🏛️",label:"สถานที่ท่องเที่ยว",msg:"แนะนำสถานที่ท่องเที่ยวทั้งหมดในเพชรบุรี"},
@@ -203,13 +205,13 @@ const LANGS = {
       {icon:"🏕️",label:"แก่งกระจาน",msg:"อุทยานแห่งชาติแก่งกระจานมีอะไรน่าสนใจบ้าง?"},
       {icon:"🍮",label:"ขนมหม้อแกง",msg:"ขนมหม้อแกงเพชรบุรี ราคาเท่าไหร่ ซื้อได้ที่ไหน?"},
     ],
-    suggestions:["🏛️ ที่เที่ยวแนะนำ?","🍜 ของกินยอดนิยม?","🚗 เดินทางยังไง?","📅 ช่วงไหนดีที่สุด?"],
+    suggestions:["🏛️ ที่เที่ยวแนะนำ?","🍜 ของกินยอดนิยม?","🚌 เดินทางยังไง?","🌤️ ช่วงไหนดีที่สุด?"],
     showMenu:"แสดงเมนูด่วน", hideMenu:"ซ่อนเมนูด่วน", directions:"นำทาง", mapView:"แผนที่",
   },
   en: {
     code:"en", label:"🇬🇧 EN",
     placeholder:"Ask about Phetchaburi...",
-    welcome:"Hello! 🌿 I'm **Nong Phet**, your AI travel guide for Phetchaburi.\n\nAsk me about attractions 🏛️, food 🍽️, accommodation 🏨, or transport 🚗!",
+    welcome:"Hello! I'm **PhetBot** 🤖 — your AI travel guide for Phetchaburi & Hua Hin! ✨\n\nAsk me about attractions 🏛️, food 🍽️, accommodation 🏨, transport 🚗, safety 🛡️ or culture 🎎!",
     newChat:"New Chat", errorMsg:"❌ An error occurred. Please check the server and try again.",
     quotaMsg:"⚠️ AI service has reached its daily quota limit 😔\n\nPlease try again tomorrow 🙏",
     plannerTab:"Plan Trip", chatTab:"Chat",
@@ -219,14 +221,15 @@ const LANGS = {
     interestOptions:["🏔️ Mountain/Forest","🏖️ Beach/Sea","🏛️ History","🍽️ Food/Souvenirs","🌅 Sunset","🦜 Birdwatching"],
     travelOptions:["Solo","Couple","Family","Friends"],
     quickMenu:[
-      {icon:"📸",label:"Photo Spots",msg:"Best photography spots in Phetchaburi"},
-      {icon:"🍜",label:"Popular Food",msg:"Most popular food and must-eat dishes in Phetchaburi"},
-      {icon:"🏨",label:"Accommodation",msg:"Accommodation recommendations by budget"},
-      {icon:"🚨",label:"Emergency",msg:"Emergency numbers and hospitals in Phetchaburi"},
-      {icon:"🎭",label:"Activities",msg:"Cultural activities in Phetchaburi"},
-      {icon:"👔",label:"Etiquette",msg:"Temple dress code and etiquette"},
-      {icon:"💰",label:"Budget",msg:"Estimate travel expenses for 2 days"},
-      {icon:"🎪",label:"Festivals",msg:"Annual festivals in Phetchaburi"},
+      {icon:"🏛️",label:"Attractions",msg:"Top tourist attractions in Phetchaburi & Hua Hin"},
+      {icon:"🍜",label:"Popular Food",msg:"Must-eat food and restaurants in Phetchaburi & Hua Hin"},
+      {icon:"🚌",label:"Getting There",msg:"How to travel from Bangkok to Phetchaburi or Hua Hin?"},
+      {icon:"🌤️",label:"Best Season",msg:"Best time of year to visit Phetchaburi and Hua Hin"},
+      {icon:"📸",label:"Photo Spots",msg:"Best photography spots and check-in points in Phetchaburi–Hua Hin"},
+      {icon:"🏨",label:"Accommodation",msg:"Hotel and resort recommendations in Phetchaburi & Hua Hin by budget"},
+      {icon:"🎭",label:"Activities",msg:"Best activities and things to do in Phetchaburi & Hua Hin"},
+      {icon:"🎪",label:"Festivals",msg:"Annual festivals and events in Phetchaburi and Hua Hin"},
+      {icon:"💰",label:"Budget",msg:"Help me estimate travel costs for 2 days in Phetchaburi–Hua Hin"},
     ],
     sidebarItems:[
       {icon:"🏛️",label:"Attractions",msg:"All tourist attractions in Phetchaburi"},
@@ -236,13 +239,13 @@ const LANGS = {
       {icon:"🏕️",label:"Kaeng Krachan",msg:"What's great about Kaeng Krachan National Park?"},
       {icon:"🍮",label:"Khanom Mo Kaeng",msg:"What is Khanom Mo Kaeng and where to buy it?"},
     ],
-    suggestions:["🏛️ Top attractions?","🍮 Famous food?","🚗 Getting there?","📅 Best season?"],
+    suggestions:["🏛️ Top attractions?","🍜 Popular food?","🚌 Getting there?","🌤️ Best season?"],
     showMenu:"Show Quick Menu", hideMenu:"Hide Quick Menu", directions:"Navigate", mapView:"Map",
   },
   zh: {
     code:"zh", label:"🇨🇳 中文",
     placeholder:"询问碧武里旅游...",
-    welcome:"您好！🌿 我是**小碧**，您的碧武里AI旅游向导。\n\n可以问我景点 🏛️、美食 🍽️、住宿 🏨 或交通 🚗！",
+    welcome:"您好！我是 **PhetBot** 🤖 碧武里&华欣AI旅游助手！✨\n\n可以问我景点 🏛️、美食 🍽️、住宿 🏨、交通 🚗、安全 🛡️ 或文化礼仪 🎎！",
     newChat:"新对话", errorMsg:"❌ 发生错误，请检查服务器后重试。",
     quotaMsg:"⚠️ AI服务已达到每日配额限制 😔\n\n请明天再试 🙏",
     plannerTab:"行程规划", chatTab:"聊天",
@@ -252,14 +255,15 @@ const LANGS = {
     interestOptions:["🏔️ 山/森林","🏖️ 海滩","🏛️ 历史","🍽️ 美食/纪念品","🌅 日落","🦜 观鸟"],
     travelOptions:["独行","情侣","家庭","朋友"],
     quickMenu:[
-      {icon:"📸",label:"拍照胜地",msg:"碧武里最佳拍照地点推荐"},
-      {icon:"🍜",label:"热门美食",msg:"碧武里最受欢迎的美食有哪些，推荐餐厅？"},
-      {icon:"🏨",label:"住宿推荐",msg:"按预算推荐碧武里住宿"},
-      {icon:"🚨",label:"紧急联系",msg:"碧武里紧急电话和医院信息"},
-      {icon:"🎭",label:"文化活动",msg:"碧武里有哪些文化体验活动？"},
-      {icon:"👔",label:"寺庙礼仪",msg:"参观碧武里寺庙的着装要求和礼仪"},
-      {icon:"💰",label:"预算计算",msg:"帮我估算1人在碧武里游玩2天的费用"},
-      {icon:"🎪",label:"节庆活动",msg:"碧武里有哪些年度节庆？"},
+      {icon:"🏛️",label:"推荐景点",msg:"碧武里和华欣有哪些值得一游的旅游景点？"},
+      {icon:"🍜",label:"热门美食",msg:"碧武里和华欣最受欢迎的美食和餐厅推荐"},
+      {icon:"🚌",label:"如何到达",msg:"从曼谷到碧武里和华欣有哪些交通方式？"},
+      {icon:"🌤️",label:"最佳旅游时间",msg:"碧武里和华欣最佳旅游季节是什么时候？"},
+      {icon:"📸",label:"拍照景点",msg:"碧武里和华欣最适合打卡拍照的地点有哪些？"},
+      {icon:"🏨",label:"住宿推荐",msg:"按预算推荐碧武里和华欣的酒店住宿"},
+      {icon:"🎭",label:"旅游活动",msg:"碧武里和华欣有哪些特色旅游活动？"},
+      {icon:"🎪",label:"节日活动",msg:"碧武里和华欣有哪些年度节庆活动？"},
+      {icon:"💰",label:"旅游预算",msg:"帮我估算1人在碧武里和华欣游玩2天的费用"},
     ],
     sidebarItems:[
       {icon:"🏛️",label:"所有景点",msg:"碧武里所有旅游景点介绍"},
@@ -269,7 +273,7 @@ const LANGS = {
       {icon:"🏕️",label:"凯恩格拉占",msg:"凯恩格拉占国家公园有什么特色？"},
       {icon:"🍮",label:"椰奶蛋糕",msg:"碧武里椰奶蛋糕在哪里买？多少钱？"},
     ],
-    suggestions:["🏛️ 推荐景点？","🍜 热门美食？","🚗 怎么去？","📅 最佳季节？"],
+    suggestions:["🏛️ 推荐景点？","🍜 热门美食？","🚌 怎么去？","🌤️ 最佳季节？"],
     showMenu:"显示快捷菜单", hideMenu:"隐藏快捷菜单", directions:"导航", mapView:"地图",
   },
 };
@@ -391,7 +395,7 @@ function CompareTable({ data, lang }) {
 function TypingIndicator() {
   return (
     <div className="message bot-message typing">
-      <div className="msg-avatar">🌿</div>
+      <div className="msg-avatar bot-avatar"><img src={PHETBOT_LOGO} alt="PhetBot"/></div>
       <div className="bubble"><span className="dot"/><span className="dot"/><span className="dot"/></div>
     </div>
   );
@@ -939,8 +943,8 @@ export default function App() {
       <aside className="sidebar">
         <div className="sidebar-top">
           <div className="sidebar-brand">
-            <span className="brand-icon">🌿</span>
-            {sidebarOpen&&<span className="brand-name">น้องเพชร</span>}
+            <img src={PHETBOT_LOGO} alt="PhetBot" className="brand-logo-img"/>
+            {sidebarOpen&&<span className="brand-name">PhetBot</span>}
           </div>
           <button className="sidebar-toggle" onClick={()=>setSidebarOpen(s=>!s)}>{sidebarOpen?"◀":"▶"}</button>
         </div>
@@ -1033,7 +1037,7 @@ export default function App() {
           <button className="mob-hamburger" onClick={()=>setMobileMenuOpen(true)} aria-label="Menu">
             <span/><span/><span/>
           </button>
-          <span className="mob-title">🌿 น้องเพชร</span>
+          <span className="mob-title">🌿 PhetBot</span>
           <div className="topbar-right">
             {activeTab==="chat"&&(
               <button className="qm-toggle-btn" onClick={()=>setShowQuickMenu(s=>{ localStorage.setItem('qmHidden', s?'1':'0'); return !s; })}>
@@ -1049,7 +1053,7 @@ export default function App() {
             <div className="messages-area" ref={messagesRef}>
               {isWelcome&&(
                 <div className="welcome-screen">
-                  <div className="welcome-avatar">🌿</div>
+                  <div className="welcome-avatar"><img src={PHETBOT_LOGO} alt="PhetBot" className="welcome-logo-img"/></div>
                   <h1>{L$(lang,"สวัสดีค่ะ! ฉันคือน้องเพชร 🌿","Hello! I'm Nong Phet","您好！我是小碧")}</h1>
                   <p>{L$(lang,"ไกด์ท่องเที่ยว AI สำหรับจังหวัดเพชรบุรี","AI Tourism Guide for Phetchaburi","碧武里AI旅游向导")}</p>
                   <div className="welcome-chips">
@@ -1133,7 +1137,7 @@ export default function App() {
           <aside className="mob-drawer" onClick={e=>e.stopPropagation()}>
             {/* Drawer header */}
             <div className="mob-drawer-header">
-              <span className="mob-drawer-brand">🌿 น้องเพชร</span>
+              <span className="mob-drawer-brand">🌿 PhetBot</span>
               <button className="mob-drawer-close" onClick={()=>setMobileMenuOpen(false)}>✕</button>
             </div>
 

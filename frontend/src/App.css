@@ -6,33 +6,40 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --forest:        #1e4d35;
-  --forest-mid:    #2d6a4f;
-  --forest-light:  #40916c;
-  --forest-pale:   #d8f3dc;
-  --forest-bg:     #f0f7f2;
-  --text-dark:     #1a2e1a;
-  --text-mid:      #4a6741;
-  --text-muted:    #7a9a7a;
+  --forest:        #5b21b6;
+  --forest-mid:    #7c3aed;
+  --forest-light:  #a855f7;
+  --forest-pale:   #f3e8ff;
+  --forest-bg:     #faf5ff;
+  --text-dark:     #1e1b2e;
+  --text-mid:      #6d28d9;
+  --text-muted:    #a78bfa;
   --sidebar-w:     240px;
   --sidebar-w-sm:  60px;
   --topbar-h:      56px;
   --radius:        12px;
-  --shadow:        0 2px 16px rgba(30,77,53,0.10);
-  --shadow-md:     0 4px 24px rgba(30,77,53,0.14);
+  --shadow:        0 2px 16px rgba(91,33,182,0.12);
+  --shadow-md:     0 4px 24px rgba(91,33,182,0.18);
   --transition:    0.22s cubic-bezier(0.4,0,0.2,1);
+  /* Glassmorphism */
+  --glass-bg:      rgba(255,255,255,0.72);
+  --glass-border:  rgba(168,85,247,0.20);
+  --grad-primary:  linear-gradient(135deg,#5b21b6 0%,#be185d 100%);
+  --grad-accent:   linear-gradient(135deg,#7c3aed 0%,#ec4899 100%);
 }
 
-html, body, #root { height: 100%; overflow: hidden; background: var(--forest-bg); font-family: 'Sarabun', sans-serif; background: var(--forest-bg); color: var(--text-dark); }
+html, body, #root { height: 100%; overflow: hidden; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border); font-family: 'Sarabun', sans-serif; background: var(--forest-bg); color: var(--text-dark); }
 
 html.dark {
-  --forest-bg:  #0f1a12;
-  --text-dark:  #e0f0e0;
-  --text-mid:   #7ab880;
-  --text-muted: #4a6a4a;
-  --forest-pale: #1a3020;
-  --shadow:     0 2px 16px rgba(0,0,0,0.4);
-  --shadow-md:  0 4px 24px rgba(0,0,0,0.5);
+  --forest-bg:  #0d0a1e;
+  --text-dark:  #f3e8ff;
+  --text-mid:   #c084fc;
+  --text-muted: #7c3aed;
+  --forest-pale: #1e1040;
+  --glass-bg:   rgba(13,10,30,0.80);
+  --glass-border: rgba(168,85,247,0.15);
+  --shadow:     0 2px 16px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 24px rgba(0,0,0,0.6);
 }
 
 /* Dynamic viewport height — set by JS visualViewport */
@@ -42,12 +49,12 @@ html.dark {
 }
 
 /* ── DASHBOARD ── */
-.dashboard { display: flex; height: var(--app-h, 100dvh); width: 100vw; overflow: hidden; background: var(--forest-bg); }
+.dashboard { display: flex; height: var(--app-h, 100dvh); width: 100vw; overflow: hidden; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 
 /* ── SIDEBAR ── */
 .sidebar {
   width: var(--sidebar-w); min-width: var(--sidebar-w);
-  height: var(--app-h, 100dvh); background: var(--forest);
+  height: var(--app-h, 100dvh); background: var(--grad-primary);
   display: flex; flex-direction: column;
   overflow: hidden; transition: width var(--transition), min-width var(--transition);
   position: relative; z-index: 100; flex-shrink: 0;
@@ -71,7 +78,7 @@ html.dark {
 
 .new-chat-btn {
   margin: 14px 12px 6px; padding: 10px 14px;
-  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(6px);
   border-radius: var(--radius); color: white; font-family: 'Sarabun', sans-serif;
   font-size: 0.88rem; font-weight: 600; cursor: pointer;
   transition: all var(--transition); text-align: left; display: flex; align-items: center; gap: 8px;
@@ -184,7 +191,7 @@ html.dark .welcome-chip:hover { background: var(--forest); color: white; }
 html.dark .msg-avatar { background: #1a3020; }
 .user-avatar { background: #C9A227; }
 .bubble { max-width: calc(100% - 52px); padding: 12px 18px; border-radius: 18px; font-size: 0.92rem; line-height: 1.75; color: var(--text-dark); word-break: break-word; }
-.bot-message .bubble { background: white; border: 1px solid rgba(30,77,53,0.08); border-radius: 4px 18px 18px 18px; box-shadow: var(--shadow); display: inline-block; width: fit-content; max-width: 100%; }
+.bot-message .bubble { background: var(--glass-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--glass-border); border: 1px solid rgba(30,77,53,0.08); border-radius: 4px 18px 18px 18px; box-shadow: var(--shadow); display: inline-block; width: fit-content; max-width: 100%; }
 html.dark .bot-message .bubble { background: #1a2e1e; border-color: rgba(116,198,157,0.1); color: #c8e6c9; }
 .user-message .bubble { background: var(--forest); color: white; border-radius: 18px 4px 18px 18px; width: max-content; max-width: min(55vw, 600px); }
 .quota-bubble { background: #fff8e1 !important; border: 2px solid #f4a932 !important; color: #7a5a00 !important; }
@@ -218,8 +225,8 @@ html.dark .input-section { background: #141f16; border-top-color: rgba(255,255,2
 }
 .quick-menu-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 html.dark .quick-menu-bar { border-bottom-color: rgba(255,255,255,0.07); }
-.qm-chip { padding: 6px 14px; background: var(--forest-pale); border: 1.5px solid rgba(30,77,53,0.12); border-radius: 20px; font-family: 'Sarabun', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--forest-mid); cursor: pointer; transition: all var(--transition); white-space: nowrap; }
-.qm-chip:hover { background: var(--forest); color: white; border-color: var(--forest); transform: translateY(-1px); }
+.qm-chip { padding: 6px 14px; background: rgba(168,85,247,0.08); border: 1.5px solid rgba(168,85,247,0.25); border-radius: 20px; font-family: 'Sarabun', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--forest-mid); cursor: pointer; transition: all var(--transition); white-space: nowrap; }
+.qm-chip:hover { background: var(--grad-accent); color: white; border-color: transparent; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
 html.dark .qm-chip { background: #1a2e1e; color: #74c69d; border-color: rgba(116,198,157,0.2); }
 html.dark .qm-chip:hover { background: var(--forest); color: white; }
 
@@ -1109,7 +1116,7 @@ html.dark .welcome-nav-btn:hover { background: rgba(255,255,255,0.08); }
   height: 32px;
   border: none;
   border-radius: 0 8px 8px 0;
-  background: var(--forest);
+  background: var(--forest-mid);
   color: white;
   font-size: 0.75rem;
   cursor: pointer;
@@ -1145,4 +1152,40 @@ html.dark .qm-close-btn:hover { background: rgba(255,255,255,0.16); color: white
 
 /* sidebar-icons strip removed — using floating tab instead */
 .sidebar-icons { display: none !important; }
+/* ── PhetBot Logo styles ── */
+.brand-logo-img {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: rgba(255,255,255,0.15);
+  padding: 2px;
+  flex-shrink: 0;
+}
+.welcome-logo-img {
+  width: 80px; height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 16px rgba(124,58,237,0.4));
+  animation: floatLogo 3s ease-in-out infinite;
+}
+@keyframes floatLogo {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.mob-logo-img {
+  width: 22px; height: 22px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+  border-radius: 50%;
+}
+.bot-avatar img {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: white;
+  padding: 2px;
+}
+/* Sidebar gradient override for dark */
+html.dark .sidebar { background: linear-gradient(135deg,#2d1b69 0%,#701a75 100%); }
+html.dark .sft-expand, html.dark .sft-lang { background: #5b21b6; }
 
