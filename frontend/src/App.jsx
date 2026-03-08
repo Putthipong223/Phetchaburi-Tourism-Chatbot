@@ -92,19 +92,84 @@ const TYPE_EMOJI = { attraction:"🏛️", hotel:"🏨", restaurant:"🍽️" };
 // FESTIVAL DATA (เพชรบุรีเท่านั้น)
 // ══════════════════════════════════════════════
 const FESTIVALS = [
-  { month:1,  name:"งานกาชาดเพชรบุรี",          date:"ม.ค. สัปดาห์ที่ 3",     location:"สนามกีฬาจังหวัดเพชรบุรี",  desc:"งานใหญ่ประจำปี มีการแสดง ร้านค้า อาหาร และกิจกรรมการกุศล จัดโดยสภากาชาดจังหวัด", icon:"🎪", highlight:true  },
-  { month:2,  name:"งานพระนครคีรี–เดินแสง",     date:"ก.พ. สัปดาห์ที่ 1",     location:"พระนครคีรี (เขาวัง)",      desc:"แสง สี เสียง อันตระการตาบนเขาวัง วิวสวยที่สุดของปี ชมฟรี ไม่ต้องเสียค่าเข้า", icon:"✨", highlight:true  },
-  { month:4,  name:"สงกรานต์เพชรบุรี",           date:"13–15 เม.ย.",            location:"ถนนสายหลัก / หาดชะอำ",    desc:"เล่นน้ำสงกรานต์สไตล์ท้องถิ่น มีขบวนแห่ และกิจกรรมรดน้ำผู้สูงอายุ", icon:"💦", highlight:true  },
-  { month:5,  name:"วันวิสาขบูชาที่เขาวัง",      date:"ขึ้น 15 ค่ำ เดือน 6",   location:"พระนครคีรี",               desc:"เวียนเทียนบนเขาวัง บรรยากาศศักดิ์สิทธิ์ท่ามกลางแสงเทียนนับพัน", icon:"🕯️", highlight:false },
-  { month:7,  name:"แข่งเรือยาวประเพณีเพชรบุรี", date:"ก.ค.–ส.ค.",             location:"แม่น้ำเพชรบุรี",           desc:"แข่งเรือยาวประเพณีโบราณที่สืบทอดมาหลายร้อยปี มีเรือชิงชนะเลิศ บรรยากาศสนุกสนาน", icon:"🚣", highlight:false },
-  { month:9,  name:"งานกินเจเพชรบุรี",           date:"ต.ค. (9 วัน)",           location:"ชุมชนจีน ในเมืองเพชรบุรี", desc:"เดินเที่ยวกินเจ ร้านค้าอาหารมังสวิรัติเปิดทั่วเมือง บรรยากาศคึกคัก", icon:"🥬", highlight:false },
-  { month:10, name:"ออกพรรษาแข่งเรือ",           date:"ขึ้น 15 ค่ำ เดือน 11",  location:"แม่น้ำเพชรบุรี",           desc:"ประเพณีออกพรรษาพร้อมการแข่งเรือพายแบบดั้งเดิม", icon:"🛶", highlight:false },
-  { month:11, name:"ทอดกฐินเพชรบุรี",            date:"พ.ย.",                   location:"วัดทั่วจังหวัดเพชรบุรี",  desc:"ทอดกฐินสามัคคีวัดสำคัญในจังหวัด เช่น วัดมหาธาตุ วัดยาง วัดเพชรพลี", icon:"🙏", highlight:false },
-  { month:12, name:"ปีใหม่ชะอำ",                 date:"31 ธ.ค.–1 ม.ค.",        location:"หาดชะอำ เพชรบุรี",         desc:"เคาท์ดาวน์ริมหาด มีคอนเสิร์ต ดอกไม้ไฟ ตลาดกลางคืน บรรยากาศสนุกสนาน", icon:"🎆", highlight:true  },
+  { month:1,  icon:"🎪", highlight:true,
+    name:"งานกาชาดเพชรบุรี",
+    nameEn:"Phetchaburi Red Cross Fair", nameZh:"碧武里红十字会嘉年华",
+    date:"ม.ค. สัปดาห์ที่ 3", dateEn:"3rd week of January", dateZh:"1月第3周",
+    location:"สนามกีฬาจังหวัดเพชรบุรี", locationEn:"Phetchaburi Provincial Stadium", locationZh:"碧武里府运动场",
+    desc:"งานใหญ่ประจำปี มีการแสดง ร้านค้า อาหาร และกิจกรรมการกุศล จัดโดยสภากาชาดจังหวัด",
+    descEn:"Major annual fair with performances, food stalls, and charity activities organized by the provincial Red Cross.",
+    descZh:"年度大型嘉年华，有表演、摊位、美食和慈善活动，由省红十字会主办。" },
+  { month:2,  icon:"✨", highlight:true,
+    name:"งานพระนครคีรี–เดินแสง",
+    nameEn:"Phra Nakhon Khiri Festival – Light Walk", nameZh:"帕那空奇里灯光节",
+    date:"ก.พ. สัปดาห์ที่ 1", dateEn:"1st week of February", dateZh:"2月第1周",
+    location:"พระนครคีรี (เขาวัง)", locationEn:"Phra Nakhon Khiri (Khao Wang)", locationZh:"帕那空奇里（考旺）",
+    desc:"แสง สี เสียง อันตระการตาบนเขาวัง วิวสวยที่สุดของปี ชมฟรี ไม่ต้องเสียค่าเข้า",
+    descEn:"Spectacular light, color, and sound show on Khao Wang hill. The most beautiful view of the year — free entry!",
+    descZh:"考旺山丘上壮观的灯光音响秀，是全年最美的夜景，免费入场！" },
+  { month:4,  icon:"💦", highlight:true,
+    name:"สงกรานต์เพชรบุรี",
+    nameEn:"Phetchaburi Songkran Festival", nameZh:"碧武里宋干节（泼水节）",
+    date:"13–15 เม.ย.", dateEn:"13–15 April", dateZh:"4月13–15日",
+    location:"ถนนสายหลัก / หาดชะอำ", locationEn:"Main streets / Cha-am Beach", locationZh:"主街道 / 七岩海滩",
+    desc:"เล่นน้ำสงกรานต์สไตล์ท้องถิ่น มีขบวนแห่ และกิจกรรมรดน้ำผู้สูงอายุ",
+    descEn:"Local-style water festival with parades and traditional elder-blessing ceremonies.",
+    descZh:"泰国传统泼水节，有游行和向长辈祈福的传统仪式。" },
+  { month:5,  icon:"🕯️", highlight:false,
+    name:"วันวิสาขบูชาที่เขาวัง",
+    nameEn:"Visakha Bucha at Khao Wang", nameZh:"考旺山佛诞节烛光游行",
+    date:"ขึ้น 15 ค่ำ เดือน 6", dateEn:"Full moon of 6th lunar month", dateZh:"农历六月十五",
+    location:"พระนครคีรี", locationEn:"Phra Nakhon Khiri", locationZh:"帕那空奇里",
+    desc:"เวียนเทียนบนเขาวัง บรรยากาศศักดิ์สิทธิ์ท่ามกลางแสงเทียนนับพัน",
+    descEn:"Candlelit procession on Khao Wang hill — a sacred atmosphere among thousands of flickering candles.",
+    descZh:"在考旺山上举行烛光绕行仪式，数千支蜡烛营造出庄严神圣的气氛。" },
+  { month:7,  icon:"🚣", highlight:false,
+    name:"แข่งเรือยาวประเพณีเพชรบุรี",
+    nameEn:"Phetchaburi Traditional Longboat Race", nameZh:"碧武里传统龙舟竞赛",
+    date:"ก.ค.–ส.ค.", dateEn:"July – August", dateZh:"7–8月",
+    location:"แม่น้ำเพชรบุรี", locationEn:"Phetchaburi River", locationZh:"碧武里河",
+    desc:"แข่งเรือยาวประเพณีโบราณที่สืบทอดมาหลายร้อยปี มีเรือชิงชนะเลิศ บรรยากาศสนุกสนาน",
+    descEn:"Ancient longboat racing tradition passed down for centuries, with exciting competitive races on the river.",
+    descZh:"延续数百年的传统龙舟赛，在碧武里河上举行，气氛热烈。" },
+  { month:9,  icon:"🥬", highlight:false,
+    name:"งานกินเจเพชรบุรี",
+    nameEn:"Phetchaburi Vegetarian Festival", nameZh:"碧武里素食节",
+    date:"ต.ค. (9 วัน)", dateEn:"October (9 days)", dateZh:"10月（9天）",
+    location:"ชุมชนจีน ในเมืองเพชรบุรี", locationEn:"Chinese community, Phetchaburi city", locationZh:"碧武里市华人社区",
+    desc:"เดินเที่ยวกินเจ ร้านค้าอาหารมังสวิรัติเปิดทั่วเมือง บรรยากาศคึกคัก",
+    descEn:"9-day vegetarian festival with vegan food stalls open throughout the city — vibrant street atmosphere.",
+    descZh:"为期9天的素食节，全市素食摊位林立，热闹非凡。" },
+  { month:10, icon:"🛶", highlight:false,
+    name:"ออกพรรษาแข่งเรือ",
+    nameEn:"End of Buddhist Lent Boat Race", nameZh:"佛教安居节结束龙舟赛",
+    date:"ขึ้น 15 ค่ำ เดือน 11", dateEn:"Full moon of 11th lunar month", dateZh:"农历十一月十五",
+    location:"แม่น้ำเพชรบุรี", locationEn:"Phetchaburi River", locationZh:"碧武里河",
+    desc:"ประเพณีออกพรรษาพร้อมการแข่งเรือพายแบบดั้งเดิม",
+    descEn:"End-of-Lent ceremony combined with traditional paddle boat racing on the river.",
+    descZh:"佛教安居节结束仪式，结合传统划船比赛。" },
+  { month:11, icon:"🙏", highlight:false,
+    name:"ทอดกฐินเพชรบุรี",
+    nameEn:"Phetchaburi Kathin Robe Offering", nameZh:"碧武里献袈裟节",
+    date:"พ.ย.", dateEn:"November", dateZh:"11月",
+    location:"วัดทั่วจังหวัดเพชรบุรี", locationEn:"Temples across Phetchaburi", locationZh:"碧武里各大寺庙",
+    desc:"ทอดกฐินสามัคคีวัดสำคัญในจังหวัด เช่น วัดมหาธาตุ วัดยาง วัดเพชรพลี",
+    descEn:"Traditional merit-making ceremony offering robes to monks at major temples like Wat Mahathat and Wat Yang.",
+    descZh:"在玛哈泰寺等重要寺庙举行的传统献袈裟积德仪式。" },
+  { month:12, icon:"🎆", highlight:true,
+    name:"ปีใหม่ชะอำ",
+    nameEn:"Cha-am New Year Countdown", nameZh:"七岩海滩新年倒计时",
+    date:"31 ธ.ค.–1 ม.ค.", dateEn:"31 Dec – 1 Jan", dateZh:"12月31日–1月1日",
+    location:"หาดชะอำ เพชรบุรี", locationEn:"Cha-am Beach, Phetchaburi", locationZh:"碧武里七岩海滩",
+    desc:"เคาท์ดาวน์ริมหาด มีคอนเสิร์ต ดอกไม้ไฟ ตลาดกลางคืน บรรยากาศสนุกสนาน",
+    descEn:"Beach countdown party with concerts, fireworks, and a night market — welcome the New Year by the sea!",
+    descZh:"海滩跨年派对，有演唱会、烟火秀和夜市，在海边迎接新年！" },
 ];
 const MONTH_TH   = ["","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 const MONTH_EN   = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const MONTH_FULL = ["","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const MONTH_ZH      = ["","1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+const MONTH_ZH_FULL = ["","一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 
 // ══════════════════════════════════════════════
 // ACCOMMODATION DATA (เพชรบุรีเท่านั้น)
@@ -468,7 +533,7 @@ function FestivalCalendar({ lang }) {
                 className={`calendar-month ${events.length>0?"has-events":""} ${month===curMonth?"current-month":""} ${selectedMonth===month?"selected":""}`}
                 onClick={()=>setSelectedMonth(selectedMonth===month?null:month)}>
                 <div className="calendar-month-label">
-                  {lang==="en"?MONTH_EN[month]:MONTH_TH[month]}
+                  {lang==="zh"?MONTH_ZH[month]:lang==="en"?MONTH_EN[month]:MONTH_TH[month]}
                   {month===curMonth&&<span className="now-badge">{L$(lang,"ตอนนี้","Now","当前")}</span>}
                 </div>
                 <div className="calendar-events-preview">
@@ -476,7 +541,7 @@ function FestivalCalendar({ lang }) {
                     ? <span className="no-event">–</span>
                     : events.map((e,i)=>(
                         <div key={i} className={`event-dot ${e.highlight?"highlight":""}`}>
-                          <span>{e.icon}</span><span className="event-dot-name">{e.name}</span>
+                          <span>{e.icon}</span><span className="event-dot-name">{lang==="zh"?e.nameZh:lang==="en"?e.nameEn:e.name}</span>
                         </div>
                       ))
                   }
@@ -489,16 +554,16 @@ function FestivalCalendar({ lang }) {
         {selectedMonth&&(
           <div className="month-detail">
             <div className="month-detail-title">
-              {lang==="en"?MONTH_EN[selectedMonth]:MONTH_FULL[selectedMonth]} — {filtered.filter(f=>f.month===selectedMonth).length} {L$(lang,"งาน","event","活动")}
+              {lang==="zh"?MONTH_ZH_FULL[selectedMonth]:lang==="en"?MONTH_EN[selectedMonth]:MONTH_FULL[selectedMonth]} — {filtered.filter(f=>f.month===selectedMonth).length} {L$(lang,"งาน","event","活动")}
             </div>
             <div className="festival-cards">
               {filtered.filter(f=>f.month===selectedMonth).map((fest,i)=>(
                 <div key={i} className={`festival-card ${fest.highlight?"highlight":""}`} onClick={()=>setSelectedFest(fest)}>
                   <div className="festival-card-icon">{fest.icon}</div>
                   <div className="festival-card-body">
-                    <div className="festival-card-name">{fest.name}</div>
-                    <div className="festival-card-date">📅 {fest.date}</div>
-                    <div className="festival-card-location">📍 {fest.location}</div>
+                    <div className="festival-card-name">{lang==="zh"?fest.nameZh:lang==="en"?fest.nameEn:fest.name}</div>
+                    <div className="festival-card-date">📅 {lang==="zh"?fest.dateZh:lang==="en"?fest.dateEn:fest.date}</div>
+                    <div className="festival-card-location">📍 {lang==="zh"?fest.locationZh:lang==="en"?fest.locationEn:fest.location}</div>
                   </div>
                   {fest.highlight&&<span className="highlight-badge">⭐ {L$(lang,"งานใหญ่","Major","重要")}</span>}
                 </div>
@@ -512,12 +577,12 @@ function FestivalCalendar({ lang }) {
           <div className="festival-modal" onClick={e=>e.stopPropagation()}>
             <button className="modal-close" onClick={()=>setSelectedFest(null)}>✕</button>
             <div className="modal-icon">{selectedFest.icon}</div>
-            <h3 className="modal-title">{selectedFest.name}</h3>
+            <h3 className="modal-title">{lang==="zh"?selectedFest.nameZh:lang==="en"?selectedFest.nameEn:selectedFest.name}</h3>
             <div className="modal-info">
-              <div>📅 <strong>{L$(lang,"วันที่","Date","日期")}:</strong> {selectedFest.date}</div>
-              <div>📍 <strong>{L$(lang,"สถานที่","Location","地点")}:</strong> {selectedFest.location}</div>
+              <div>📅 <strong>{L$(lang,"วันที่","Date","日期")}:</strong> {lang==="zh"?selectedFest.dateZh:lang==="en"?selectedFest.dateEn:selectedFest.date}</div>
+              <div>📍 <strong>{L$(lang,"สถานที่","Location","地点")}:</strong> {lang==="zh"?selectedFest.locationZh:lang==="en"?selectedFest.locationEn:selectedFest.location}</div>
             </div>
-            <p className="modal-desc">{selectedFest.desc}</p>
+            <p className="modal-desc">{lang==="zh"?selectedFest.descZh:lang==="en"?selectedFest.descEn:selectedFest.desc}</p>
             <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedFest.location+"+เพชรบุรี")}`}
               target="_blank" rel="noreferrer" className="modal-map-btn">
               🗺️ {L$(lang,"ดูสถานที่บนแผนที่","View on Maps","在地图上查看")}
