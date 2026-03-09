@@ -1077,7 +1077,7 @@ function BudgetCalculator({ lang }) {
         <div className="bc-card">
           <div className="bc-card-row">
             <div className="bc-col">
-              <div className="bc-label">{L3("⚡ งบด่วน (วิจัย)","⚡ Quick Budget","⚡ 快速预算")}</div>
+              <div className="bc-label">{L3("⚡ เลือกงบ","⚡ Quick Select","⚡ 快速选择")}</div>
               <div className="bc-preset-row">
                 {BUDGET_PRESETS_DATA.map((p,i)=>(
                   <button key={i} className="bc-preset-pill" onClick={()=>applyPreset(p)} title={lang==="zh"?p.desc_zh:lang==="en"?p.desc_en:p.desc_th}>
@@ -1270,11 +1270,7 @@ function BudgetCalculator({ lang }) {
               </div>
             </div>
 
-            <div className="bc-research-note">
-              📌 {lang==="zh"?"研究数据：中国游客平均消费600–1,000 CNY/次":
-                  lang==="en"?"Research: Chinese tourists avg 600–1,000 CNY/trip":
-                  "ผลวิจัย: นักท่องเที่ยวจีนใช้จ่ายเฉลี่ย 600–1,000 CNY/ทริป"}
-            </div>
+
           </div>
         )}
 
@@ -1312,6 +1308,7 @@ export default function App() {
   const [showQuickMenu, setShowQuickMenu] = useState(()=>localStorage.getItem('qmHidden')!=='1');
   const [showAdmin, setShowAdmin]         = useState(false);
   const [deleteModal, setDeleteModal]     = useState(null);  // {id, title} or "all"
+  const [showEmergency, setShowEmergency]   = useState(false);
   const [toast, setToast]                 = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessions, setSessions]           = useState(()=>loadSessions());
@@ -1449,31 +1446,10 @@ export default function App() {
             </nav>
           </>)}
 
-          {/* Emergency Card */}
-          <div className="sidebar-emergency">
-            <div className="emergency-title">🚨 {L$(lang,"ฉุกเฉิน","Emergency","紧急求助")}</div>
-            <a href="tel:1155" className="emergency-btn">
-              <span className="e-icon">👮</span>
-              <span>
-                <span className="e-label">{L$(lang,"ตำรวจท่องเที่ยว","Tourist Police","旅游警察")}</span>
-                <span className="e-num">1155</span>
-              </span>
-            </a>
-            <a href="tel:191" className="emergency-btn">
-              <span className="e-icon">🚓</span>
-              <span>
-                <span className="e-label">{L$(lang,"ตำรวจ","Police","警察")}</span>
-                <span className="e-num">191</span>
-              </span>
-            </a>
-            <a href="tel:1669" className="emergency-btn">
-              <span className="e-icon">🚑</span>
-              <span>
-                <span className="e-label">{L$(lang,"พยาบาล","Ambulance","救护车")}</span>
-                <span className="e-num">1669</span>
-              </span>
-            </a>
-          </div>
+          {/* Emergency Button */}
+          <button className="sidebar-emg-btn" onClick={()=>setShowEmergency(true)}>
+            🚨 {L$(lang,"เบอร์ฉุกเฉิน","Emergency","紧急求助")}
+          </button>
 
           {/* Settings */}
           <div className="sidebar-bottom">
@@ -1666,30 +1642,9 @@ export default function App() {
             </>)}
 
             {/* Emergency */}
-            <div className="mob-drawer-section mob-emergency-section">🚨 {L$(lang,"ฉุกเฉิน","Emergency","紧急求助")}</div>
-            <div className="mob-emergency-card">
-              <a href="tel:1155" className="mob-emergency-btn">
-                <span className="mob-e-icon">👮</span>
-                <span className="mob-e-info">
-                  <span className="mob-e-label">{L$(lang,"ตำรวจท่องเที่ยว","Tourist Police","旅游警察")}</span>
-                  <span className="mob-e-num">1155</span>
-                </span>
-              </a>
-              <a href="tel:191" className="mob-emergency-btn">
-                <span className="mob-e-icon">🚓</span>
-                <span className="mob-e-info">
-                  <span className="mob-e-label">{L$(lang,"ตำรวจ","Police","警察")}</span>
-                  <span className="mob-e-num">191</span>
-                </span>
-              </a>
-              <a href="tel:1669" className="mob-emergency-btn">
-                <span className="mob-e-icon">🚑</span>
-                <span className="mob-e-info">
-                  <span className="mob-e-label">{L$(lang,"พยาบาล","Ambulance","救护车")}</span>
-                  <span className="mob-e-num">1669</span>
-                </span>
-              </a>
-            </div>
+            <button className="mob-emg-btn" onClick={()=>{setShowEmergency(true);setMobileMenuOpen(false);}}>
+              🚨 {L$(lang,"เบอร์ฉุกเฉิน","Emergency Numbers","紧急求助")}
+            </button>
 
             {/* Settings */}
             <div className="mob-drawer-section">{L$(lang,"ตั้งค่า","Settings","设置")}</div>
@@ -1744,6 +1699,46 @@ This action cannot be undone.`,
       )}
 
       {/* ── Toast ── */}
+      {/* ── Emergency Modal ── */}
+      {showEmergency&&(
+        <div className="del-modal-overlay" onClick={()=>setShowEmergency(false)}>
+          <div className="emg-modal" onClick={e=>e.stopPropagation()}>
+            <div className="emg-modal-header">
+              <span>🚨 {L$(lang,"เบอร์ฉุกเฉิน","Emergency Numbers","紧急求助")}</span>
+              <button className="emg-close" onClick={()=>setShowEmergency(false)}>✕</button>
+            </div>
+            <div className="emg-modal-sub">{L$(lang,"กดโทรออกได้เลย","Tap to call directly","点击直接拨打")}</div>
+            <div className="emg-list">
+              <a href="tel:1155" className="emg-item">
+                <div className="emg-icon-wrap">👮</div>
+                <div className="emg-info">
+                  <span className="emg-name">{L$(lang,"ตำรวจท่องเที่ยว","Tourist Police","旅游警察")}</span>
+                  <span className="emg-number">1155</span>
+                </div>
+                <div className="emg-call-btn">📞 {L$(lang,"โทร","Call","拨打")}</div>
+              </a>
+              <a href="tel:191" className="emg-item">
+                <div className="emg-icon-wrap">🚓</div>
+                <div className="emg-info">
+                  <span className="emg-name">{L$(lang,"ตำรวจ","Police","警察")}</span>
+                  <span className="emg-number">191</span>
+                </div>
+                <div className="emg-call-btn">📞 {L$(lang,"โทร","Call","拨打")}</div>
+              </a>
+              <a href="tel:1669" className="emg-item">
+                <div className="emg-icon-wrap">🚑</div>
+                <div className="emg-info">
+                  <span className="emg-name">{L$(lang,"พยาบาล / กู้ภัย","Ambulance / Rescue","救护车")}</span>
+                  <span className="emg-number">1669</span>
+                </div>
+                <div className="emg-call-btn">📞 {L$(lang,"โทร","Call","拨打")}</div>
+              </a>
+            </div>
+            <div className="emg-footer">{L$(lang,"บริการฟรีตลอด 24 ชั่วโมง","Free service 24/7","24小时免费服务")}</div>
+          </div>
+        </div>
+      )}
+
       {toast&&<div className="toast-notif">{toast}</div>}
     </div>
   );
