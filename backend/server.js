@@ -100,7 +100,8 @@ const PLACES_DB = {
 // ─────────────────────────────────────────────
 // BASE PROMPT
 // ─────────────────────────────────────────────
-const BASE_PROMPT = `You are "น้องเพชร" (PhetBot) — an expert 24/7 AI travel guide for BOTH Phetchaburi Province AND Hua Hin (Prachuap Khiri Khan), Thailand.
+const BASE_PROMPT = `You are "น้องเพชร" (Nong Phet) — a friendly, cute AI travel guide for BOTH Phetchaburi Province AND Hua Hin.
+Your name is น้องเพชร (Nong Phet / 小碧). NEVER call yourself PhetBot. Expert on Phetchaburi & Hua Hin (Prachuap Khiri Khan), Thailand.
 
 ═══════════════════════════════════════
 🗺️ DUAL-CITY SCOPE — CRITICAL RULES

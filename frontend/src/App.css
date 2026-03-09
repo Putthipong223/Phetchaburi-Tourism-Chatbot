@@ -1306,4 +1306,67 @@ html.dark .emergency-btn:hover { background: rgba(239,68,68,0.30); }
 .mob-e-info { display: flex; flex-direction: column; line-height: 1.25; }
 .mob-e-label { font-size: 0.72rem; opacity: 0.8; color: #fecaca; }
 .mob-e-num   { font-size: 1.1rem; font-weight: 700; color: #fca5a5; letter-spacing: 0.03em; }
+/* ── Delete Confirm Modal ── */
+.del-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.del-modal {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 32px 28px 24px;
+  width: min(360px, 90vw);
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(91,33,182,0.25);
+  animation: slideUp 0.22s ease;
+}
+.del-modal-icon { font-size: 2.2rem; margin-bottom: 10px; }
+.del-modal-title {
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--forest); margin: 0 0 10px;
+}
+.del-modal-desc {
+  font-size: 0.85rem; color: #666; line-height: 1.55;
+  margin: 0 0 22px; white-space: pre-line;
+}
+html.dark .del-modal-desc { color: #aaa; }
+html.dark .del-modal { background: rgba(20,12,48,0.92); }
+.del-modal-btns { display: flex; gap: 10px; justify-content: center; }
+.del-btn-cancel {
+  flex: 1; padding: 10px 0; border-radius: 10px;
+  border: 1.5px solid rgba(124,58,237,0.25);
+  background: transparent; color: var(--forest-mid);
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  transition: background 0.18s;
+}
+.del-btn-cancel:hover { background: rgba(124,58,237,0.08); }
+.del-btn-confirm {
+  flex: 1; padding: 10px 0; border-radius: 10px;
+  border: none; background: linear-gradient(135deg,#dc2626,#ef4444);
+  color: white; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: opacity 0.18s;
+}
+.del-btn-confirm:hover { opacity: 0.88; }
+
+/* ── Toast ── */
+.toast-notif {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg,#5b21b6,#be185d);
+  color: white; padding: 10px 22px;
+  border-radius: 99px; font-size: 0.85rem; font-weight: 600;
+  z-index: 10000; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(91,33,182,0.35);
+  animation: fadeIn 0.25s ease, fadeOut 0.4s ease 2.4s forwards;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeIn  { from { opacity:0 } to { opacity:1 } }
+@keyframes slideUp { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
+@keyframes fadeOut { from { opacity:1 } to { opacity:0 } }
 

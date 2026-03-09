@@ -278,7 +278,7 @@ const LANGS = {
   th: {
     code:"th", label:"🇹🇭 ไทย",
     placeholder:"ถามน้องเพชรเรื่องเพชรบุรี–หัวหิน...",
-    welcome:"สวัสดีค่ะ! ฉันคือ **PhetBot** 🤖 ผู้ช่วย AI ท่องเที่ยวเพชรบุรี–หัวหิน ✨\n\nอยากรู้เรื่องที่เที่ยว 🏛️ ของกินอร่อย 🍽️ ที่พัก 🏨 การเดินทาง 🚗 ความปลอดภัย 🛡️ หรือวัฒนธรรม 🎎 ถามได้เลยนะคะ!",
+    welcome:"สวัสดีค่ะ! ฉันคือ **น้องเพชร** 💜 ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน ✨\n\nอยากรู้เรื่องที่เที่ยว 🏛️ ของกินอร่อย 🍽️ ที่พัก 🏨 การเดินทาง 🚗 ความปลอดภัย 🛡️ หรือวัฒนธรรม 🎎 ถามได้เลยนะคะ!",
     newChat:"แชทใหม่", errorMsg:"❌ เกิดข้อผิดพลาด กรุณาตรวจสอบ Server และลองใหม่นะคะ",
     quotaMsg:"⚠️ ขณะนี้ AI ให้บริการเกินโควต้าต่อวันแล้วค่ะ 😔\n\nกรุณาลองใหม่อีกครั้งในวันพรุ่งนี้ค่ะ 🙏",
     plannerTab:"จัดทริป", chatTab:"แชท",
@@ -313,7 +313,7 @@ const LANGS = {
   en: {
     code:"en", label:"🇬🇧 EN",
     placeholder:"Ask about Phetchaburi...",
-    welcome:"Hello! I'm **PhetBot** 🤖 — your AI travel guide for Phetchaburi & Hua Hin! ✨\n\nAsk me about attractions 🏛️, food 🍽️, accommodation 🏨, transport 🚗, safety 🛡️ or culture 🎎!",
+    welcome:"Hello! I'm **Nong Phet** 💜 — your AI travel guide for Phetchaburi & Hua Hin! ✨\n\nAsk me about attractions 🏛️, food 🍽️, accommodation 🏨, transport 🚗, safety 🛡️ or culture 🎎!",
     newChat:"New Chat", errorMsg:"❌ An error occurred. Please check the server and try again.",
     quotaMsg:"⚠️ AI service has reached its daily quota limit 😔\n\nPlease try again tomorrow 🙏",
     plannerTab:"Plan Trip", chatTab:"Chat",
@@ -348,7 +348,7 @@ const LANGS = {
   zh: {
     code:"zh", label:"🇨🇳 中文",
     placeholder:"询问碧武里旅游...",
-    welcome:"您好！我是 **PhetBot** 🤖 碧武里&华欣AI旅游助手！✨\n\n可以问我景点 🏛️、美食 🍽️、住宿 🏨、交通 🚗、安全 🛡️ 或文化礼仪 🎎！",
+    welcome:"您好！我是 **小碧** 💜 碧武里&华欣AI旅游小助手！✨\n\n可以问我景点 🏛️、美食 🍽️、住宿 🏨、交通 🚗、安全 🛡️ 或文化礼仪 🎎！",
     newChat:"新对话", errorMsg:"❌ 发生错误，请检查服务器后重试。",
     quotaMsg:"⚠️ AI服务已达到每日配额限制 😔\n\n请明天再试 🙏",
     plannerTab:"行程规划", chatTab:"聊天",
@@ -417,6 +417,7 @@ function parseContent(text) {
 // ══════════════════════════════════════════════
 function PlaceCard({ placeKey, lang }) {
   const L = LANGS[lang];
+  const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(null), 2800); };
   const place = PLACES_DB[placeKey];
   const [imgError, setImgError] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -462,6 +463,42 @@ function PlaceCard({ placeKey, lang }) {
         </div>
       </div>
     </div>
+
+      {/* ── Delete Confirm Modal ── */}
+      {deleteModal&&(
+        <div className="del-modal-overlay" onClick={()=>setDeleteModal(null)}>
+          <div className="del-modal" onClick={e=>e.stopPropagation()}>
+            <div className="del-modal-icon">🗑️</div>
+            <h3 className="del-modal-title">{L$(lang,"ยืนยันการลบแชท","Delete Chat?","确认删除对话")}</h3>
+            <p className="del-modal-desc">
+              {L$(lang,
+                `ลบ "${deleteModal.title||"แชทนี้"}" ใช่หรือไม่?
+การกระทำนี้ไม่สามารถย้อนกลับได้`,
+                `Delete "${deleteModal.title||"this chat"}"?
+This action cannot be undone.`,
+                `确认删除「${deleteModal.title||"此对话"}」？
+此操作无法撤销。`
+              )}
+            </p>
+            <div className="del-modal-btns">
+              <button className="del-btn-cancel" onClick={()=>setDeleteModal(null)}>
+                {L$(lang,"ยกเลิก","Cancel","取消")}
+              </button>
+              <button className="del-btn-confirm" onClick={()=>{
+                deleteSession(deleteModal.id);
+                setSessions(loadSessions());
+                setDeleteModal(null);
+                showToast(L$(lang,"ลบแชทเรียบร้อยแล้ว ✓","Chat deleted ✓","对话已删除 ✓"));
+              }}>
+                {L$(lang,"🗑️ ลบแชท","🗑️ Delete","🗑️ 删除")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Toast Notification ── */}
+      {toast&&<div className="toast-notif">{toast}</div>}
   );
 }
 
@@ -678,7 +715,7 @@ function AdminDashboard({ onClose }) {
       </tr>`).join('');
     const html = `<!DOCTYPE html><html lang="th"><head>
       <meta charset="UTF-8">
-      <title>FAQ Dashboard — PhetBot</title>
+      <title>FAQ Dashboard — น้องเพชร</title>
       <style>
         body{font-family:'Sarabun',sans-serif;padding:32px 40px;color:#1a2e1a;font-size:14px}
         h1{color:#7c3aed;font-size:1.6rem;margin-bottom:4px}
@@ -694,7 +731,7 @@ function AdminDashboard({ onClose }) {
         @media print{body{padding:16px}}
       </style>
     </head><body>
-      <h1>📊 FAQ Dashboard — PhetBot</h1>
+      <h1>📊 FAQ Dashboard — น้องเพชร</h1>
       <div class="sub">Generated: ${new Date().toLocaleString('th-TH')} · ทั้งหมด ${faqData.length} คำถาม</div>
       <div class="stats">
         <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">จำนวน queries ทั้งหมด</div></div>
@@ -705,7 +742,7 @@ function AdminDashboard({ onClose }) {
         <thead><tr><th style="width:40px">#</th><th>คำถาม</th><th style="width:70px;text-align:center">ครั้ง</th><th style="width:110px;text-align:center">ล่าสุด</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <div class="footer">PhetBot — AI Travel Guide for Phetchaburi & Hua Hin</div>
+      <div class="footer">น้องเพชร — AI Travel Guide for Phetchaburi & Hua Hin</div>
     </body></html>`;
     const win = window.open('','_blank','width=900,height=700');
     if (!win) { alert('กรุณาอนุญาต popup แล้วลองใหม่'); return; }
@@ -953,6 +990,8 @@ export default function App() {
   const [activeTab, setActiveTab]     = useState("chat");
   const [showQuickMenu, setShowQuickMenu] = useState(()=>localStorage.getItem('qmHidden')!=='1');
   const [showAdmin, setShowAdmin]         = useState(false);
+  const [deleteModal, setDeleteModal]     = useState(null);  // {id, title} or "all"
+  const [toast, setToast]                 = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessions, setSessions]           = useState(()=>loadSessions());
   const L = LANGS[lang];
@@ -1080,7 +1119,7 @@ export default function App() {
                     {sess.starred?"⭐":"☆"}
                   </button>
                   <button className="history-del" title="ลบ"
-                    onClick={()=>{if(window.confirm("ลบประวัติแชทนี้?")){deleteSession(sess.id);setSessions(loadSessions());}}}>
+                    onClick={()=>setDeleteModal({id:sess.id,title:sess.title})}>
                     ✕
                   </button>
                 </div>
@@ -1296,7 +1335,7 @@ export default function App() {
                     <span className="mob-hist-title">{sess.title}</span>
                   </button>
                   <button className="mob-hist-del"
-                    onClick={()=>{if(window.confirm("ลบ?")){deleteSession(sess.id);setSessions(loadSessions());}}}>✕</button>
+                    onClick={()=>setDeleteModal({id:sess.id,title:sess.title})}>✕</button>
                 </div>
               ))}
             </>)}
