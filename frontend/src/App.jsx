@@ -944,6 +944,388 @@ function ItineraryPlanner({ lang }) {
   );
 }
 
+
+// ══════════════════════════════════════════════
+// FEATURE: BUDGET CALCULATOR
+// ══════════════════════════════════════════════
+const THB_TO_CNY = 0.20; // 1 THB ≈ 0.20 CNY
+
+const BUDGET_PRESETS = {
+  th: [
+    { label:"💚 งบประหยัด",  desc:"< 3,000 ฿/คน",  values:{ accomType:"homestay", nights:2, accomPerNight:500, food:300, foodDays:2, transport:"bus", transportCost:300, activities:100, souvenirs:200 } },
+    { label:"💛 งบมาตรฐาน", desc:"3,000–6,000 ฿/คน", values:{ accomType:"hotel",    nights:2, accomPerNight:1200, food:500, foodDays:2, transport:"rental", transportCost:800, activities:350, souvenirs:500 } },
+    { label:"💜 งบพรีเมียม", desc:"> 6,000 ฿/คน",  values:{ accomType:"resort",   nights:3, accomPerNight:3000, food:900, foodDays:3, transport:"rental", transportCost:1500, activities:700, souvenirs:1000 } },
+  ],
+  en: [
+    { label:"💚 Budget",   desc:"< 3,000 ฿/pax",    values:{ accomType:"homestay", nights:2, accomPerNight:500, food:300, foodDays:2, transport:"bus", transportCost:300, activities:100, souvenirs:200 } },
+    { label:"💛 Standard", desc:"3,000–6,000 ฿/pax", values:{ accomType:"hotel",    nights:2, accomPerNight:1200, food:500, foodDays:2, transport:"rental", transportCost:800, activities:350, souvenirs:500 } },
+    { label:"💜 Premium",  desc:"> 6,000 ฿/pax",    values:{ accomType:"resort",   nights:3, accomPerNight:3000, food:900, foodDays:3, transport:"rental", transportCost:1500, activities:700, souvenirs:1000 } },
+  ],
+  zh: [
+    { label:"💚 经济型", desc:"< 600 CNY/人",     values:{ accomType:"homestay", nights:2, accomPerNight:500, food:300, foodDays:2, transport:"bus", transportCost:300, activities:100, souvenirs:200 } },
+    { label:"💛 标准型", desc:"600–1,000 CNY/人", values:{ accomType:"hotel",    nights:2, accomPerNight:1200, food:500, foodDays:2, transport:"rental", transportCost:800, activities:350, souvenirs:500 } },
+    { label:"💜 高端型", desc:"> 1,200 CNY/人",   values:{ accomType:"resort",   nights:3, accomPerNight:3000, food:900, foodDays:3, transport:"rental", transportCost:1500, activities:700, souvenirs:1000 } },
+  ],
+};
+
+const ACCOM_TYPES = {
+  th: [{v:"homestay",l:"🏡 โฮมสเตย์ (~400–700฿"},{v:"hotel",l:"🏨 โรงแรม (~900–2,000฿"},{v:"resort",l:"🌊 รีสอร์ท (~2,000฿+"}],
+  en: [{v:"homestay",l:"🏡 Homestay (~400–700฿"},{v:"hotel",l:"🏨 Hotel (~900–2,000฿"},{v:"resort",l:"🌊 Resort (~2,000฿+"}],
+  zh: [{v:"homestay",l:"🏡 民宿 (~400–700฿"},{v:"hotel",l:"🏨 酒店 (~900–2,000฿"},{v:"resort",l:"🌊 度假村 (~2,000฿+"}],
+};
+
+const TRANSPORT_TYPES = {
+  th: [{v:"bus",l:"🚌 รถโดยสาร"},{v:"rental",l:"🚗 รถเช่า"},{v:"taxi",l:"🚕 แท็กซี่/Grab"}],
+  en: [{v:"bus",l:"🚌 Bus/Minivan"},{v:"rental",l:"🚗 Car Rental"},{v:"taxi",l:"🚕 Taxi/Grab"}],
+  zh: [{v:"bus",l:"🚌 大巴/面包车"},{v:"rental",l:"🚗 租车"},{v:"taxi",l:"🚕 出租车/Grab"}],
+};
+
+const ACTIVITIES_HINTS = {
+  th: "เช่น เขาวัง 150฿, แก่งกระจาน 200฿, ถ้ำเขาหลวง ฟรี",
+  en: "e.g. Khao Wang 150฿, Kaeng Krachan 200฿, Khao Luang Cave Free",
+  zh: "如：考旺宫150฿，凯恩格拉占200฿，考銮洞免费",
+};
+
+function BudgetCalculator({ lang }) {
+  const [currency, setCurrency] = useState("THB");
+  const [persons, setPersons]   = useState(2);
+  const [accomType, setAccomType]         = useState("hotel");
+  const [nights, setNights]               = useState(2);
+  const [accomPerNight, setAccomPerNight] = useState(1200);
+  const [food, setFood]                   = useState(500);
+  const [foodDays, setFoodDays]           = useState(2);
+  const [transport, setTransport]         = useState("rental");
+  const [transportCost, setTransportCost] = useState(800);
+  const [activities, setActivities]       = useState(350);
+  const [souvenirs, setSouvenirs]         = useState(500);
+  const [showResult, setShowResult]       = useState(false);
+  const [showReset, setShowReset]         = useState(false);
+
+  const fmt = (thb) => {
+    const v = currency === "CNY" ? thb * THB_TO_CNY : thb;
+    const sym = currency === "CNY" ? "¥" : "฿";
+    return sym + Math.round(v).toLocaleString();
+  };
+
+  const applyPreset = (p) => {
+    const v = p.values;
+    setAccomType(v.accomType); setNights(v.nights);
+    setAccomPerNight(v.accomPerNight); setFood(v.food);
+    setFoodDays(v.foodDays); setTransport(v.transport);
+    setTransportCost(v.transportCost); setActivities(v.activities);
+    setSouvenirs(v.souvenirs); setShowResult(false);
+  };
+
+  const totalAccom     = accomPerNight * nights;
+  const totalFood      = food * foodDays * persons;
+  const totalTransport = transportCost;
+  const totalActivities = activities * persons;
+  const totalSouvenirs  = souvenirs * persons;
+  const grandTotal     = totalAccom + totalFood + totalTransport + totalActivities + totalSouvenirs;
+  const perPerson      = persons > 0 ? grandTotal / persons : grandTotal;
+
+  const categories = [
+    { key:"accom",     icon:"🏨", pct:0, thb: totalAccom,
+      label: lang==="zh"?"住宿费":lang==="en"?"Accommodation":"ที่พัก",
+      color:"#7C3AED" },
+    { key:"food",      icon:"🍽️", pct:0, thb: totalFood,
+      label: lang==="zh"?"餐饮费":lang==="en"?"Food":"ค่าอาหาร",
+      color:"#BE185D" },
+    { key:"transport", icon:"🚗", pct:0, thb: totalTransport,
+      label: lang==="zh"?"交通费":lang==="en"?"Transport":"ค่าเดินทาง",
+      color:"#9333EA" },
+    { key:"activities",icon:"🎟️", pct:0, thb: totalActivities,
+      label: lang==="zh"?"门票活动":lang==="en"?"Activities":"ค่าเข้าชม",
+      color:"#C026D3" },
+    { key:"souvenirs", icon:"🛍️", pct:0, thb: totalSouvenirs,
+      label: lang==="zh"?"纪念品":lang==="en"?"Souvenirs":"ของที่ระลึก",
+      color:"#DB2777" },
+  ].map(c => ({ ...c, pct: grandTotal > 0 ? Math.round(c.thb / grandTotal * 100) : 0 }));
+
+  const doReset = () => {
+    setAccomType("hotel"); setNights(2); setAccomPerNight(1200);
+    setFood(500); setFoodDays(2); setTransport("rental");
+    setTransportCost(800); setActivities(350); setSouvenirs(500);
+    setPersons(2); setShowResult(false); setShowReset(false);
+  };
+
+  const T = {
+    title: lang==="zh"?"💰 计算旅行预算":lang==="en"?"💰 Trip Budget Calculator":"💰 คำนวณงบทริป",
+    preset: lang==="zh"?"⚡ เลือกงบด่วน (จากงานวิจัย)":lang==="en"?"⚡ Quick Budget Presets (Research-based)":"⚡ เลือกงบด่วน (จากงานวิจัย)",
+    persons: lang==="zh"?"👥 จำนวนผู้เดินทาง":lang==="en"?"👥 Number of Travelers":"👥 จำนวนผู้เดินทาง",
+    accom: lang==="zh"?"🏨 ที่พัก":lang==="en"?"🏨 Accommodation":"🏨 ที่พัก",
+    accomType: lang==="zh"?"ประเภท":lang==="en"?"Type":"ประเภท",
+    nights: lang==="zh"?"🌙 จำนวนคืน":lang==="en"?"🌙 Nights":"🌙 จำนวนคืน",
+    perNight: lang==="zh"?"ราคาต่อคืน (฿)":lang==="en"?"Price/night (฿)":"ราคาต่อคืน (฿)",
+    food: lang==="zh"?"🍽️ ค่าอาหาร":lang==="en"?"🍽️ Food":"🍽️ ค่าอาหาร",
+    perDayPerson: lang==="zh"?"ต่อวัน/คน (฿)":lang==="en"?"Per day/person (฿)":"ต่อวัน/คน (฿)",
+    days: lang==="zh"?"จำนวนวัน":lang==="en"?"Days":"จำนวนวัน",
+    transport: lang==="zh"?"🚗 ค่าเดินทาง":lang==="en"?"🚗 Transport":"🚗 ค่าเดินทาง",
+    transportMode: lang==="zh"?"รูปแบบ":lang==="en"?"Mode":"รูปแบบ",
+    totalCost: lang==="zh"?"ค่าใช้จ่ายรวม (฿)":lang==="en"?"Total cost (฿)":"ค่าใช้จ่ายรวมทริป (฿)",
+    activities: lang==="zh"?"🎟️ ค่าเข้าชม/กิจกรรม":lang==="en"?"🎟️ Attractions/Activities":"🎟️ ค่าเข้าชม / กิจกรรม",
+    perPerson: lang==="zh"?"ต่อคน (฿)":lang==="en"?"Per person (฿)":"ต่อคน (฿)",
+    souvenirs: lang==="zh"?"🛍️ ของที่ระลึก":lang==="en"?"🛍️ Souvenirs":"🛍️ ของที่ระลึก",
+    calcBtn: lang==="zh"?"✨ คำนวณทันที":lang==="en"?"✨ Calculate Now":"✨ คำนวณทันที",
+    resetBtn: lang==="zh"?"🗑️ ล้างข้อมูล":lang==="en"?"🗑️ Reset":"🗑️ ล้างข้อมูล",
+    summary: lang==="zh"?"📊 สรุปค่าใช้จ่าย":lang==="en"?"📊 Budget Summary":"📊 สรุปค่าใช้จ่าย",
+    grand: lang==="zh"?"รวมทั้งหมด":lang==="en"?"Grand Total":"รวมทั้งหมด",
+    perHead: lang==="zh"?"เฉลี่ยต่อคน":lang==="en"?"Per Person":"เฉลี่ยต่อคน",
+    currency: lang==="zh"?"สกุลเงิน":lang==="en"?"Currency":"สกุลเงิน",
+    researchNote: lang==="zh"?"📌 ตามงานวิจัย นักท่องเที่ยวจีนใช้จ่ายเฉลี่ย 600–1,000 CNY/ทริป":lang==="en"?"📌 Research: Chinese tourists average 600–1,000 CNY per trip":"📌 ตามงานวิจัย นักท่องเที่ยวจีนใช้จ่ายเฉลี่ย 600–1,000 CNY/ทริป",
+  };
+
+  return (
+    <div className="budget-wrap">
+      <div className="budget-scroll">
+
+        {/* Header */}
+        <div className="budget-header">
+          <h2 className="budget-title">{T.title}</h2>
+          <p className="budget-subtitle">{T.researchNote}</p>
+        </div>
+
+        {/* Currency + Preset row */}
+        <div className="budget-top-bar">
+          <div className="budget-currency-row">
+            <span className="budget-label">{T.currency}</span>
+            <div className="currency-toggle">
+              {["THB","CNY"].map(c=>(
+                <button key={c} className={`currency-btn ${currency===c?"active":""}`} onClick={()=>setCurrency(c)}>
+                  {c==="THB"?"🇹🇭 ฿ THB":"🇨🇳 ¥ CNY"}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Preset Buttons */}
+        <div className="budget-section">
+          <div className="budget-section-title">{T.preset}</div>
+          <div className="budget-presets">
+            {(BUDGET_PRESETS[lang]||BUDGET_PRESETS.th).map((p,i)=>(
+              <button key={i} className="preset-btn" onClick={()=>applyPreset(p)}>
+                <span className="preset-label">{p.label}</span>
+                <span className="preset-desc">{p.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Persons */}
+        <div className="budget-section">
+          <div className="budget-section-title">{T.persons}</div>
+          <div className="budget-stepper-row">
+            <button className="stepper-btn" onClick={()=>setPersons(p=>Math.max(1,p-1))}>−</button>
+            <span className="stepper-val">{persons} {lang==="zh"?"人":lang==="en"?"person(s)":"คน"}</span>
+            <button className="stepper-btn" onClick={()=>setPersons(p=>Math.min(20,p+1))}>+</button>
+          </div>
+        </div>
+
+        {/* Accommodation */}
+        <div className="budget-section">
+          <div className="budget-section-title">{T.accom}</div>
+          <div className="budget-field-grid">
+            <div className="budget-field">
+              <label>{T.accomType}</label>
+              <div className="budget-chips">
+                {(ACCOM_TYPES[lang]||ACCOM_TYPES.th).map(a=>(
+                  <button key={a.v} className={`chip-btn ${accomType===a.v?"active":""}`} onClick={()=>{setAccomType(a.v);setAccomPerNight(a.v==="homestay"?550:a.v==="hotel"?1200:3000);}}>
+                    {a.l})
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="budget-field-row">
+              <div className="budget-field half">
+                <label>{T.nights}</label>
+                <div className="budget-stepper-row compact">
+                  <button className="stepper-btn sm" onClick={()=>setNights(n=>Math.max(1,n-1))}>−</button>
+                  <span className="stepper-val">{nights}</span>
+                  <button className="stepper-btn sm" onClick={()=>setNights(n=>Math.min(30,n+1))}>+</button>
+                </div>
+              </div>
+              <div className="budget-field half">
+                <label>{T.perNight}</label>
+                <input type="number" className="budget-input" min="0" value={accomPerNight} onChange={e=>setAccomPerNight(+e.target.value||0)}/>
+              </div>
+            </div>
+            <div className="budget-calc-preview">
+              🏨 {nights} {lang==="zh"?"晚":lang==="en"?"night(s)":"คืน"} × ฿{accomPerNight.toLocaleString()} = <strong>{fmt(totalAccom)}</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* Food */}
+        <div className="budget-section food-highlight">
+          <div className="budget-section-title">🍽️ {lang==="zh"?"餐饮费（重点）":lang==="en"?"Food (Key Category)":"ค่าอาหาร (หมวดสำคัญ)"}</div>
+          <div className="food-note">{lang==="zh"?"อาหารเด็ด: ขนมหม้อแกง 30–50฿, อาหารทะเลชะอำ 200–500฿/มื้อ":lang==="en"?"Must-try: Khanom Mo Kaeng 30–50฿, Cha-am seafood 200–500฿/meal":"อาหารเด็ด: ขนมหม้อแกง 30–50฿, อาหารทะเลชะอำ 200–500฿/มื้อ"}</div>
+          <div className="budget-field-row">
+            <div className="budget-field half">
+              <label>{T.perDayPerson}</label>
+              <input type="number" className="budget-input" min="0" value={food} onChange={e=>setFood(+e.target.value||0)}/>
+            </div>
+            <div className="budget-field half">
+              <label>{T.days}</label>
+              <div className="budget-stepper-row compact">
+                <button className="stepper-btn sm" onClick={()=>setFoodDays(d=>Math.max(1,d-1))}>−</button>
+                <span className="stepper-val">{foodDays}</span>
+                <button className="stepper-btn sm" onClick={()=>setFoodDays(d=>Math.min(30,d+1))}>+</button>
+              </div>
+            </div>
+          </div>
+          <div className="budget-calc-preview">
+            🍽️ ฿{food} × {foodDays} {lang==="zh"?"天":lang==="en"?"day(s)":"วัน"} × {persons} {lang==="zh"?"人":lang==="en"?"person(s)":"คน"} = <strong>{fmt(totalFood)}</strong>
+          </div>
+        </div>
+
+        {/* Transport */}
+        <div className="budget-section">
+          <div className="budget-section-title">{T.transport}</div>
+          <div className="transport-note">{lang==="zh"?"กรุงเทพ→เพชรบุรี ~2ชม, เพชรบุรี→หัวหิน ~1ชม":lang==="en"?"Bangkok→Phetchaburi ~2h, Phetchaburi→Hua Hin ~1h":"กรุงเทพ→เพชรบุรี ~2ชม, เพชรบุรี→หัวหิน ~1ชม"}</div>
+          <div className="budget-chips">
+            {(TRANSPORT_TYPES[lang]||TRANSPORT_TYPES.th).map(tr=>(
+              <button key={tr.v} className={`chip-btn ${transport===tr.v?"active":""}`} onClick={()=>{setTransport(tr.v);setTransportCost(tr.v==="bus"?300:tr.v==="rental"?1200:600);}}>
+                {tr.l}
+              </button>
+            ))}
+          </div>
+          <div className="budget-field">
+            <label>{T.totalCost}</label>
+            <input type="number" className="budget-input" min="0" value={transportCost} onChange={e=>setTransportCost(+e.target.value||0)}/>
+          </div>
+        </div>
+
+        {/* Activities */}
+        <div className="budget-section">
+          <div className="budget-section-title">{T.activities}</div>
+          <div className="food-note">{ACTIVITIES_HINTS[lang]||ACTIVITIES_HINTS.th}</div>
+          <div className="budget-field">
+            <label>{T.perPerson}</label>
+            <input type="number" className="budget-input" min="0" value={activities} onChange={e=>setActivities(+e.target.value||0)}/>
+          </div>
+          <div className="budget-calc-preview">
+            🎟️ ฿{activities} × {persons} {lang==="zh"?"人":lang==="en"?"person(s)":"คน"} = <strong>{fmt(totalActivities)}</strong>
+          </div>
+        </div>
+
+        {/* Souvenirs */}
+        <div className="budget-section">
+          <div className="budget-section-title">{T.souvenirs}</div>
+          <div className="food-note">{lang==="zh"?"ขนมหม้อแกง, สบู่สมุนไพร, ผลิตภัณฑ์จากอุทยาน":lang==="en"?"Khanom Mo Kaeng, herbal soap, local crafts":"ขนมหม้อแกง, สบู่สมุนไพร, ผลิตภัณฑ์จากอุทยาน"}</div>
+          <div className="budget-field">
+            <label>{T.perPerson}</label>
+            <input type="number" className="budget-input" min="0" value={souvenirs} onChange={e=>setSouvenirs(+e.target.value||0)}/>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="budget-actions">
+          <button className="budget-calc-btn" onClick={()=>setShowResult(true)}>
+            {T.calcBtn}
+          </button>
+          <button className="budget-reset-btn" onClick={()=>setShowReset(true)}>
+            {T.resetBtn}
+          </button>
+        </div>
+
+        {/* RESULT PANEL */}
+        {showResult&&(
+          <div className="budget-result">
+            <h3 className="result-title">{T.summary}</h3>
+
+            {/* Total */}
+            <div className="result-total-card">
+              <div className="result-total-row">
+                <span>{T.grand}</span>
+                <span className="result-total-amount">{fmt(grandTotal)}</span>
+              </div>
+              <div className="result-total-row sub">
+                <span>{T.perHead} ({persons} {lang==="zh"?"人":lang==="en"?"pax":"คน"})</span>
+                <span>{fmt(perPerson)}</span>
+              </div>
+              {currency==="THB"&&(
+                <div className="result-total-row sub cny">
+                  <span>≈ CNY (¥{(perPerson*THB_TO_CNY).toFixed(0)}/คน)</span>
+                  <span>{(grandTotal*THB_TO_CNY).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",")} ¥</span>
+                </div>
+              )}
+            </div>
+
+            {/* Bar chart */}
+            <div className="result-bars">
+              {categories.filter(c=>c.thb>0).map(c=>(
+                <div key={c.key} className="result-bar-row">
+                  <div className="result-bar-label">
+                    <span>{c.icon} {c.label}</span>
+                    <span className="result-bar-amt">{fmt(c.thb)} ({c.pct}%)</span>
+                  </div>
+                  <div className="result-bar-track">
+                    <div className="result-bar-fill" style={{width:`${c.pct}%`, background:c.color}}/>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mini pie SVG */}
+            <div className="result-pie-wrap">
+              <svg viewBox="0 0 100 100" className="result-pie">
+                {(()=>{
+                  let offset = 0;
+                  return categories.filter(c=>c.thb>0).map(c=>{
+                    const dash = c.pct;
+                    const gap = 100 - dash;
+                    const rotate = offset * 3.6;
+                    offset += c.pct;
+                    return <circle key={c.key} r="16" cx="50" cy="50"
+                      fill="none" stroke={c.color} strokeWidth="32"
+                      strokeDasharray={`${dash} ${gap}`}
+                      strokeDashoffset={25 - offset + c.pct}
+                      transform={`rotate(${rotate - 90} 50 50)`}/>;
+                  });
+                })()}
+              </svg>
+              <div className="pie-legend">
+                {categories.filter(c=>c.thb>0).map(c=>(
+                  <div key={c.key} className="pie-legend-item">
+                    <span className="pie-dot" style={{background:c.color}}/>
+                    <span>{c.icon} {c.label} {c.pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Research badge */}
+            <div className="result-research-note">
+              {currency==="THB"
+                ? `💡 ${perPerson*THB_TO_CNY < 600?"งบนี้อยู่ในระดับ 'ประหยัด' ตามงานวิจัย (< 600 CNY/คน)":perPerson*THB_TO_CNY<=1000?"งบนี้อยู่ในระดับ 'มาตรฐาน' ตามงานวิจัย (600–1,000 CNY/คน)":"งบนี้อยู่ในระดับ 'พรีเมียม' (> 1,000 CNY/คน)"}`
+                : `💡 ${perPerson < 600?"Budget level: Economy (< 600 CNY/pax)":perPerson<=1000?"Budget level: Standard (600–1,000 CNY/pax)":"Budget level: Premium (> 1,000 CNY/pax)"}`
+              }
+            </div>
+          </div>
+        )}
+
+        <div style={{height:"80px"}}/>
+      </div>
+
+      {/* Reset Confirm Modal */}
+      {showReset&&(
+        <div className="del-modal-overlay" onClick={()=>setShowReset(false)}>
+          <div className="del-modal" onClick={e=>e.stopPropagation()}>
+            <div className="del-modal-icon">🔄</div>
+            <h3 className="del-modal-title">{lang==="zh"?"确认重置":lang==="en"?"Confirm Reset":"ล้างข้อมูลทั้งหมด?"}</h3>
+            <p className="del-modal-desc">{lang==="zh"?"数据将被清空，无法恢复":lang==="en"?"All data will be cleared. This cannot be undone.":"ข้อมูลทั้งหมดจะถูกล้าง ไม่สามารถย้อนกลับได้"}</p>
+            <div className="del-modal-btns">
+              <button className="del-btn-cancel" onClick={()=>setShowReset(false)}>{lang==="zh"?"取消":lang==="en"?"Cancel":"ยกเลิก"}</button>
+              <button className="del-btn-confirm" onClick={doReset}>{lang==="zh"?"🗑️ 重置":lang==="en"?"🗑️ Reset":"🗑️ ล้างข้อมูล"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ══════════════════════════════════════════════
 // MAIN APP
 // ══════════════════════════════════════════════
@@ -1033,9 +1415,9 @@ export default function App() {
   const handleKeyDown = e=>{ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();} };
   const isWelcome = messages.length<=1;
 
-  const tabTitles = { chat:"💬 "+L.chatTab, planner:"📚 "+L.plannerTab, festival:"🎪 "+(lang==="th"?"เทศกาล":lang==="zh"?"节庆":"Festivals"), accom:"🏨 "+(lang==="th"?"ที่พัก":lang==="zh"?"住宿":"Stays") };
+  const tabTitles = { chat:"💬 "+L.chatTab, planner:"📚 "+L.plannerTab, festival:"🎪 "+(lang==="th"?"เทศกาล":lang==="zh"?"节庆":"Festivals"), accom:"🏨 "+(lang==="th"?"ที่พัก":lang==="zh"?"住宿":"Stays"), budget:"💰 "+(lang==="th"?"คำนวณงบ":lang==="zh"?"预算计算":"Budget") };
   // Nav icons (sidebar only — NOT reused in topbar to avoid duplication)
-  const NAV_ICONS = { chat:"💬", planner:"📚", festival:"🎪", accom:"🏨" };
+  const NAV_ICONS = { chat:"💬", planner:"📚", festival:"🎪", accom:"🏨", budget:"💰" };
 
   return (
     <div className={`dashboard ${darkMode?"dark":""} ${sidebarOpen?"sidebar-open":"sidebar-closed"}`}>
@@ -1060,6 +1442,7 @@ export default function App() {
               {id:"planner", icon:"📚", th:"จัดทริป",  en:"Plan Trip", zh:"行程规划"},
               {id:"festival",icon:"🎪", th:"เทศกาล",   en:"Festivals", zh:"节庆"},
               {id:"accom",   icon:"🏨", th:"ที่พัก",   en:"Stays",     zh:"住宿"},
+              {id:"budget",  icon:"💰", th:"คำนวณงบ", en:"Budget",    zh:"预算"},
             ].map(t=>(
               <button key={t.id} className={`nav-item ${activeTab===t.id?"active":""}`} onClick={()=>setActiveTab(t.id)}>
                 <span>{t.icon}</span><span className="nav-label">{L$(lang,t.th,t.en,t.zh)}</span>
@@ -1253,6 +1636,8 @@ export default function App() {
           <div className="planner-area"><FestivalCalendar lang={lang}/></div>
         ) : activeTab==="accom" ? (
           <div className="planner-area"><AccomFilter lang={lang}/></div>
+        ) : activeTab==="budget" ? (
+          <div className="planner-area" style={{overflow:"hidden"}}><BudgetCalculator lang={lang}/></div>
         ) : null}
       </main>
 
@@ -1280,6 +1665,7 @@ export default function App() {
               {id:"planner", icon:"📚", th:"จัดทริป",  en:"Plan Trip", zh:"行程规划"},
               {id:"festival",icon:"🎪", th:"เทศกาล",   en:"Festivals", zh:"节庆"},
               {id:"accom",   icon:"🏨", th:"ที่พัก",   en:"Stays",     zh:"住宿"},
+              {id:"budget",  icon:"💰", th:"คำนวณงบ", en:"Budget",    zh:"预算"},
             ].map(t=>(
               <button key={t.id} className={`mob-drawer-item ${activeTab===t.id?"active":""}`}
                 onClick={()=>{setActiveTab(t.id);setMobileMenuOpen(false);}}>
