@@ -464,41 +464,6 @@ function PlaceCard({ placeKey, lang }) {
       </div>
     </div>
 
-      {/* ── Delete Confirm Modal ── */}
-      {deleteModal&&(
-        <div className="del-modal-overlay" onClick={()=>setDeleteModal(null)}>
-          <div className="del-modal" onClick={e=>e.stopPropagation()}>
-            <div className="del-modal-icon">🗑️</div>
-            <h3 className="del-modal-title">{L$(lang,"ยืนยันการลบแชท","Delete Chat?","确认删除对话")}</h3>
-            <p className="del-modal-desc">
-              {L$(lang,
-                `ลบ "${deleteModal.title||"แชทนี้"}" ใช่หรือไม่?
-การกระทำนี้ไม่สามารถย้อนกลับได้`,
-                `Delete "${deleteModal.title||"this chat"}"?
-This action cannot be undone.`,
-                `确认删除「${deleteModal.title||"此对话"}」？
-此操作无法撤销。`
-              )}
-            </p>
-            <div className="del-modal-btns">
-              <button className="del-btn-cancel" onClick={()=>setDeleteModal(null)}>
-                {L$(lang,"ยกเลิก","Cancel","取消")}
-              </button>
-              <button className="del-btn-confirm" onClick={()=>{
-                deleteSession(deleteModal.id);
-                setSessions(loadSessions());
-                setDeleteModal(null);
-                showToast(L$(lang,"ลบแชทเรียบร้อยแล้ว ✓","Chat deleted ✓","对话已删除 ✓"));
-              }}>
-                {L$(lang,"🗑️ ลบแชท","🗑️ Delete","🗑️ 删除")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Toast Notification ── */}
-      {toast&&<div className="toast-notif">{toast}</div>}
   );
 }
 
@@ -1385,5 +1350,41 @@ export default function App() {
         </div>
       )}
     </div>
+
+      {/* ── Delete Confirm Modal ── */}
+      {deleteModal&&(
+        <div className="del-modal-overlay" onClick={()=>setDeleteModal(null)}>
+          <div className="del-modal" onClick={e=>e.stopPropagation()}>
+            <div className="del-modal-icon">🗑️</div>
+            <h3 className="del-modal-title">{L$(lang,"ยืนยันการลบแชท","Delete Chat?","确认删除对话")}</h3>
+            <p className="del-modal-desc">
+              {L$(lang,
+                `ลบ "${deleteModal.title||"แชทนี้"}" ใช่หรือไม่?
+การกระทำนี้ไม่สามารถย้อนกลับได้`,
+                `Delete "${deleteModal.title||"this chat"}"?
+This action cannot be undone.`,
+                `确认删除「${deleteModal.title||"此对话"}」？
+此操作无法撤销。`
+              )}
+            </p>
+            <div className="del-modal-btns">
+              <button className="del-btn-cancel" onClick={()=>setDeleteModal(null)}>
+                {L$(lang,"ยกเลิก","Cancel","取消")}
+              </button>
+              <button className="del-btn-confirm" onClick={()=>{
+                deleteSession(deleteModal.id);
+                setSessions(loadSessions());
+                setDeleteModal(null);
+                showToast(L$(lang,"ลบแชทเรียบร้อยแล้ว ✓","Chat deleted ✓","对话已删除 ✓"));
+              }}>
+                {L$(lang,"🗑️ ลบแชท","🗑️ Delete","🗑️ 删除")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Toast Notification ── */}
+      {toast&&<div className="toast-notif">{toast}</div>}
   );
 }
