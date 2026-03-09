@@ -1349,7 +1349,6 @@ export default function App() {
           </aside>
         </div>
       )}
-    </div>
 
       {/* ── Delete Confirm Modal ── */}
       {deleteModal&&(
@@ -1364,7 +1363,7 @@ export default function App() {
                 `Delete "${deleteModal.title||"this chat"}"?
 This action cannot be undone.`,
                 `确认删除「${deleteModal.title||"此对话"}」？
-此操作无法撤销。`
+此操作无法撤ษ。`
               )}
             </p>
             <div className="del-modal-btns">
@@ -1384,7 +1383,8 @@ This action cannot be undone.`,
         </div>
       )}
 
-      {/* ── Toast Notification ── */}
+      {/* ── Toast ── */}
       {toast&&<div className="toast-notif">{toast}</div>}
+    </div>
   );
 }
