@@ -1335,22 +1335,40 @@ export default function App() {
     return ()=>el.removeEventListener('scroll', onScroll);
   }, []);
 
-  // ── Mobile viewport height fix (Safari/Chrome address bar) ──
+  // ── Mobile Keyboard / Viewport fix (iOS Safari + Android Chrome) ──
   useEffect(()=>{
-    const setAppH = ()=>{
-      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      document.documentElement.style.setProperty('--app-h', h+'px');
+    const root = document.documentElement;
+
+    const update = ()=>{
+      const vv = window.visualViewport;
+      if (vv) {
+        // True visible height (shrinks when keyboard opens)
+        root.style.setProperty('--app-h', vv.height + 'px');
+        // Compensate iOS scroll-up when keyboard opens
+        // visualViewport.offsetTop > 0 means browser scrolled body upward
+        const offset = vv.offsetTop || 0;
+        root.style.setProperty('--vv-offset', `-${offset}px`);
+        // Mark keyboard state for CSS
+        if (vv.height < window.innerHeight * 0.75) {
+          root.setAttribute('data-kb', '1');
+        } else {
+          root.removeAttribute('data-kb');
+        }
+      } else {
+        root.style.setProperty('--app-h', window.innerHeight + 'px');
+        root.style.setProperty('--vv-offset', '0px');
+      }
     };
-    setAppH();
-    window.visualViewport?.addEventListener('resize', setAppH);
-    window.visualViewport?.addEventListener('scroll', setAppH);
-    window.addEventListener('resize', setAppH);
-    window.addEventListener('orientationchange', setAppH);
+
+    update();
+    window.visualViewport?.addEventListener('resize', update, { passive: true });
+    window.visualViewport?.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    window.addEventListener('orientationchange', ()=>setTimeout(update, 100));
     return ()=>{
-      window.visualViewport?.removeEventListener('resize', setAppH);
-      window.visualViewport?.removeEventListener('scroll', setAppH);
-      window.removeEventListener('resize', setAppH);
-      window.removeEventListener('orientationchange', setAppH);
+      window.visualViewport?.removeEventListener('resize', update);
+      window.visualViewport?.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
     };
   }, []);
 

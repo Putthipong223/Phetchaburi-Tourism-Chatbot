@@ -28,9 +28,23 @@
   --grad-accent:   linear-gradient(135deg,#7c3aed 0%,#ec4899 100%);
 }
 
-html { height: 100%; height: -webkit-fill-available; }
-body { height: 100%; height: -webkit-fill-available; overflow: hidden; font-family: 'Sarabun', sans-serif; background: var(--forest-bg); color: var(--text-dark); }
-#root { height: 100%; height: 100dvh; overflow: hidden; }
+html { height: 100%; }
+body {
+  /* position:fixed prevents iOS rubber-band scroll when keyboard opens */
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  font-family: 'Sarabun', sans-serif;
+  background: var(--forest-bg); color: var(--text-dark);
+}
+#root {
+  /* translateY compensates for iOS scroll offset when keyboard appears */
+  height: var(--app-h, 100dvh);
+  transform: translateY(var(--vv-offset, 0px));
+  overflow: hidden;
+  /* Smooth transition for keyboard open/close */
+  transition: height 0.12s ease, transform 0.12s ease;
+  will-change: height, transform;
+}
 
 html.dark {
   --forest-bg:  #0d0a1e;
@@ -210,7 +224,13 @@ html.dark .bubble h3 { color: #c084fc; }
 html.dark .bubble h4 { color: #a855f7; }
 
 /* ── INPUT SECTION ── */
-.input-section { padding-bottom: env(safe-area-inset-bottom, 0px); /* iOS safe area */ flex-shrink: 0; padding: 0 24px 16px; background: white; border-top: 1px solid rgba(91,33,182,0.07); }
+.input-section {
+  flex-shrink: 0;
+  padding: 0 24px max(16px, env(safe-area-inset-bottom, 16px));
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(91,33,182,0.07);
+}
 html.dark .input-section { background: #141f16; border-top-color: rgba(255,255,255,0.06); }
 
 .quick-menu-bar {
@@ -483,21 +503,32 @@ html.dark .quota-notice p { color: #d4a800; }
   .quick-menu-bar::-webkit-scrollbar { display: none; }
   .qm-chip { white-space: nowrap; flex-shrink: 0; font-size: 0.74rem; padding: 6px 12px; }
 
-  /* ── Input section — in flex flow (NOT fixed) — works on all browsers ── */
+  /* ── Input section — flex flow, keyboard-safe ── */
   .input-section {
     position: relative;
     flex-shrink: 0;
+    /* When keyboard open (data-kb=1), no safe-area inset needed — keyboard replaces it */
     padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
     background: rgba(255,255,255,0.97);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-top: 1px solid rgba(91,33,182,0.08);
+    transition: padding 0.12s ease;
   }
-  html.dark .input-section { background: rgba(20,31,22,0.97); }
+  /* When keyboard open — remove bottom safe-area (keyboard covers it anyway) */
+  [data-kb="1"] .input-section {
+    padding-bottom: 8px;
+  }
+  html.dark .input-section { background: rgba(20,10,40,0.97); }
 
   /* messages-area normal padding (input is in flex flow now) */
   .messages-area {
-    padding-bottom: 12px !important;
+    padding-bottom: 8px !important;
+    /* Smooth resize when keyboard opens */
+    transition: flex 0.12s ease;
+  /* ── Keyboard open state — hide non-essential chrome ── */
+  [data-kb="1"] .topbar-title { font-size: 0.82rem; }
+  [data-kb="1"] .quick-menu-bar { display: none; }
+
   }
 
   .input-box {
