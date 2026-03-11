@@ -1335,31 +1335,44 @@ export default function App() {
     return ()=>el.removeEventListener('scroll', onScroll);
   }, []);
 
-  // ── Mobile Keyboard / Viewport fix — iOS Safari + Android Chrome ──
+  // ── Keyboard Viewport Fix — iOS Safari + Android Chrome ──
+  // Strategy: body { position:fixed; height: var(--app-h) }
+  //   → JS sets --app-h = visualViewport.height (shrinks when keyboard opens)
+  //   → position:fixed stops iOS from scrolling the page (no blank white area)
+  //   → flex chain: body → #root → dashboard → main-area → messages(flex:1) + input(flex-shrink:0)
   useEffect(()=>{
+    const body = document.body;
     const html = document.documentElement;
 
     const update = ()=>{
       const vv = window.visualViewport;
-      const h  = vv ? vv.height : window.innerHeight;
+      // visualViewport.height = actual visible area (excludes keyboard on iOS+Android)
+      const h = vv ? vv.height : window.innerHeight;
+
+      // Set --app-h on body (body { height: var(--app-h) })
+      body.style.setProperty('--app-h', h + 'px');
+
+      // Also set on :root for any other consumers
       html.style.setProperty('--app-h', h + 'px');
 
-      // Mark keyboard state: true if visible area < 75% of full screen height
-      // Works on both iOS (visualViewport shrinks) and Android (innerHeight shrinks)
-      const isKeyboard = h < window.screen.height * 0.75;
-      if (isKeyboard) {
-        html.setAttribute('data-kb', '');
-      } else {
-        html.removeAttribute('data-kb');
+      // Keyboard detection: visible height < 75% of physical screen
+      // screen.height is always the full device height regardless of orientation
+      const kbOpen = h < window.screen.height * 0.75;
+      html.toggleAttribute('data-kb', kbOpen);
+
+      // iOS Safari sometimes scrolls body even with position:fixed — force reset
+      if (document.scrollingElement) {
+        document.scrollingElement.scrollTop = 0;
       }
     };
 
+    // Run immediately + on every keyboard/orientation event
     update();
     const vv = window.visualViewport;
     vv?.addEventListener('resize', update, { passive: true });
     vv?.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
-    window.addEventListener('orientationchange', () => setTimeout(update, 200));
+    window.addEventListener('orientationchange', () => { setTimeout(update, 50); setTimeout(update, 300); });
     return () => {
       vv?.removeEventListener('resize', update);
       vv?.removeEventListener('scroll', update);
