@@ -1319,6 +1319,7 @@ export default function App() {
   const [loading, setLoading]   = useState(false);
   const [sessionId]             = useState(()=>`session_${Date.now()}`);
   const bottomRef = useRef(null);
+  const dashboardRef = useRef(null); // direct DOM ref for keyboard resize
   const messagesRef = useRef(null);
   const [topbarShrink, setTopbarShrink] = useState(false);
   const lastScrollY = useRef(0);
@@ -1336,46 +1337,39 @@ export default function App() {
   }, []);
 
   // ── Keyboard Viewport Fix — iOS Safari + Android Chrome ──
-  // Strategy: body { position:fixed; height: var(--app-h) }
-  //   → JS sets --app-h = visualViewport.height (shrinks when keyboard opens)
-  //   → position:fixed stops iOS from scrolling the page (no blank white area)
-  //   → flex chain: body → #root → dashboard → main-area → messages(flex:1) + input(flex-shrink:0)
+  // KEY INSIGHT: CSS custom properties on html/body DON'T work reliably on iOS Safari
+  // because Safari evaluates CSS vars before JS can update them after keyboard opens.
+  // SOLUTION: Set height DIRECTLY on the dashboard DOM node via ref — bypasses CSS pipeline.
   useEffect(()=>{
-    const body = document.body;
+    const el = dashboardRef.current;
     const html = document.documentElement;
+    if (!el) return;
 
     const update = ()=>{
       const vv = window.visualViewport;
-      // visualViewport.height = actual visible area (excludes keyboard on iOS+Android)
-      const h = vv ? vv.height : window.innerHeight;
+      const h  = vv ? vv.height : window.innerHeight;
+      const y  = vv ? vv.offsetTop : 0;
 
-      // Set --app-h on body (body { height: var(--app-h) })
-      body.style.setProperty('--app-h', h + 'px');
+      // Set height & position directly on the div — most reliable cross-browser method
+      el.style.height  = h + 'px';
+      el.style.top     = y + 'px';
 
-      // Also set on :root for any other consumers
-      html.style.setProperty('--app-h', h + 'px');
-
-      // Keyboard detection: visible height < 75% of physical screen
-      // screen.height is always the full device height regardless of orientation
-      const kbOpen = h < window.screen.height * 0.75;
-      html.toggleAttribute('data-kb', kbOpen);
-
-      // iOS Safari sometimes scrolls body even with position:fixed — force reset
-      if (document.scrollingElement) {
-        document.scrollingElement.scrollTop = 0;
-      }
+      // Keyboard state for CSS (hide quick menu, etc.)
+      html.toggleAttribute('data-kb', h < window.screen.height * 0.75);
     };
 
-    // Run immediately + on every keyboard/orientation event
     update();
     const vv = window.visualViewport;
-    vv?.addEventListener('resize', update, { passive: true });
-    vv?.addEventListener('scroll', update, { passive: true });
+    vv?.addEventListener('resize',  update, { passive: true });
+    vv?.addEventListener('scroll',  update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
-    window.addEventListener('orientationchange', () => { setTimeout(update, 50); setTimeout(update, 300); });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(update, 50);
+      setTimeout(update, 300);
+    });
     return () => {
-      vv?.removeEventListener('resize', update);
-      vv?.removeEventListener('scroll', update);
+      vv?.removeEventListener('resize',  update);
+      vv?.removeEventListener('scroll',  update);
       window.removeEventListener('resize', update);
     };
   }, []);
@@ -1417,7 +1411,7 @@ export default function App() {
   const NAV_ICONS = { chat:"💬", planner:"📚", festival:"🎪", accom:"🏨", budget:"💰" };
 
   return (
-    <div className={`dashboard ${darkMode?"dark":""} ${sidebarOpen?"sidebar-open":"sidebar-closed"}`}>
+    <div ref={dashboardRef} className={`dashboard ${darkMode?"dark":""} ${sidebarOpen?"sidebar-open":"sidebar-closed"}`}>
 
       {/* ── SIDEBAR ── */}
       <aside className="sidebar">

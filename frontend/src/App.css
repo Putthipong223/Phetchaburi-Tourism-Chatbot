@@ -28,27 +28,9 @@
   --grad-accent:   linear-gradient(135deg,#7c3aed 0%,#ec4899 100%);
 }
 
-html { margin: 0; padding: 0; }
-body {
-  margin: 0; padding: 0;
-  /* position:fixed is the KEY fix for iOS Safari:
-     prevents the browser from scrolling page when keyboard opens,
-     which caused the blank white area below the app */
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  /* height = visualViewport.height set by JS via --app-h */
-  height: var(--app-h, 100dvh);
-  width: 100%;
-  overflow: hidden;
-  font-family: 'Sarabun', sans-serif;
-  background: var(--forest-bg); color: var(--text-dark);
-}
-#root {
-  /* Fills body exactly — body IS the app container */
-  width: 100%; height: 100%;
-  overflow: hidden;
-  display: flex; flex-direction: column;
-}
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+body { font-family: 'Sarabun', sans-serif; background: var(--forest-bg); color: var(--text-dark); }
+#root { width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
 
 html.dark {
   --forest-bg:  #0d0a1e;
@@ -62,14 +44,18 @@ html.dark {
   --shadow-md:  0 4px 24px rgba(0,0,0,0.6);
 }
 
-/* --app-h default — JS overrides body height directly */
-:root { --app-h: 100dvh; }
+/* dashboard height is set directly by JS via dashboardRef — no CSS var needed */
 
 /* ── DASHBOARD ── */
 .dashboard {
+  /* position:fixed + JS sets height & top directly via dashboardRef
+     → element always matches visualViewport exactly → keyboard can't push it */
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 100dvh;   /* fallback; JS overrides inline */
+  min-width: 320px;
   display: flex;
-  width: 100%; height: 100%;  /* 100% of #root which = body = visualViewport.height */
-  min-height: 0; min-width: 320px; overflow: hidden;
+  overflow: hidden;
   background: var(--glass-bg);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
@@ -155,6 +141,7 @@ html.dark {
   flex: 1; min-width: 0; min-height: 0;
   display: flex; flex-direction: column;
   overflow: hidden;
+  /* height flows from dashboard (set by JS) → sidebar + main-area fill it */
 }
 
 .topbar {
@@ -375,6 +362,8 @@ html.dark .quota-notice p { color: #d4a800; }
     display: flex; flex-direction: column;
     overflow: hidden;
   }
+  /* Mobile dashboard: sidebar hidden, main-area takes full width */
+  .dashboard { flex-direction: column; }
 
   /* ── Topbar: stays in flex flow (NOT fixed) — fixes Chrome+Safari overlap ── */
   .topbar {
@@ -1662,5 +1651,3 @@ html.dark .emg-number { color: #fca5a5; }
   padding: 10px 18px 16px;
 }
 
-
-/* kb-fix-202603111645 */
