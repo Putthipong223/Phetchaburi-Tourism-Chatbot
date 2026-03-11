@@ -1,7 +1,10 @@
 /* ============================================================
    FONTS & RESET
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Playfair+Display:wght@600;700&display=swap');
+
+/* THSarabunPSK — ใช้ Sarabun จาก Google Fonts (ดิจิทัลไลซ์จาก THSarabunPSK)
+   สำหรับส่วนคู่มือทางการ ใช้ขนาดใหญ่ขึ้นตามมาตรฐานราชการไทย (16pt ≈ 21px) */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1787,23 +1790,29 @@ html.dark .manual-modal { background: #0d0a1e; }
 }
 
 /* ── Manual Section Components ── */
-.ms-wrap { padding: 24px 24px 40px; max-width: 680px; margin: 0 auto; }
+.ms-wrap {
+  padding: 24px 24px 40px; max-width: 680px; margin: 0 auto;
+  /* THSarabunPSK — ราชการไทยกำหนด 16pt; 1pt ≈ 1.333px → 16pt ≈ 21px */
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16pt;
+  line-height: 1.8;
+}
 .ms-cover { text-align: center; padding: 20px 0 28px; border-bottom: 2px solid var(--forest-pale); margin-bottom: 24px; }
 html.dark .ms-cover { border-bottom-color: rgba(168,85,247,0.2); }
 .ms-cover-badge { display: inline-block; padding: 4px 14px; background: var(--grad-accent); color: white; border-radius: 20px; font-size: 0.76rem; font-weight: 600; margin-bottom: 12px; }
-.ms-cover-desc { font-size: 0.9rem; color: var(--text-mid); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+.ms-cover-desc { font-size: 14pt; color: var(--text-mid); line-height: 1.6; max-width: 500px; margin: 0 auto; font-family: 'Sarabun', sans-serif; }
 
 .ms-section { margin-bottom: 28px; }
-.ms-heading { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 700; color: var(--forest); margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--forest-pale); }
+.ms-heading { display: flex; align-items: center; gap: 10px; font-size: 18pt; font-weight: 700; color: var(--forest); margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--forest-pale); font-family: 'Sarabun', sans-serif; }
 html.dark .ms-heading { color: #c084fc; border-bottom-color: rgba(168,85,247,0.2); }
 .ms-icon { font-size: 1.2rem; }
-.ms-body { font-size: 0.9rem; line-height: 1.7; color: var(--text-dark); }
+.ms-body { font-size: 16pt; line-height: 1.8; color: var(--text-dark); font-family: 'Sarabun', sans-serif; }
 html.dark .ms-body { color: #e9d5ff; }
-.ms-muted { color: var(--text-muted); font-size: 0.85rem; }
+.ms-muted { color: var(--text-muted); font-size: 14pt; font-family: 'Sarabun', sans-serif; }
 
 .ms-table { width: 100%; border-collapse: collapse; margin: 12px 0; border-radius: 10px; overflow: hidden; }
-.ms-td-label { padding: 9px 14px; background: var(--forest-pale); font-weight: 600; font-size: 0.85rem; width: 38%; color: var(--forest); }
-.ms-td-val { padding: 9px 14px; background: white; font-size: 0.85rem; border-bottom: 1px solid var(--forest-pale); }
+.ms-td-label { padding: 9px 14px; background: var(--forest-pale); font-weight: 700; font-size: 15pt; width: 38%; color: var(--forest); font-family: 'Sarabun', sans-serif; }
+.ms-td-val { padding: 9px 14px; background: white; font-size: 15pt; border-bottom: 1px solid var(--forest-pale); font-family: 'Sarabun', sans-serif; }
 html.dark .ms-td-label { background: rgba(91,33,182,0.2); color: #c084fc; }
 html.dark .ms-td-val { background: rgba(255,255,255,0.05); border-bottom-color: rgba(168,85,247,0.15); color: #e9d5ff; }
 
@@ -1816,12 +1825,12 @@ html.dark .ms-card-title { color: #c084fc; }
 .ms-card p { font-size: 0.85rem; margin: 0; color: var(--text-mid); line-height: 1.5; }
 
 .ms-feature-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
-.ms-feature-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: white; border: 1px solid var(--forest-pale); border-radius: 12px; font-size: 0.88rem; }
+.ms-feature-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: white; border: 1px solid var(--forest-pale); border-radius: 12px; font-size: 15pt; font-family: 'Sarabun', sans-serif; }
 html.dark .ms-feature-item { background: rgba(255,255,255,0.04); border-color: rgba(168,85,247,0.18); }
 .ms-feature-num { width: 26px; height: 26px; border-radius: 50%; background: var(--grad-accent); color: white; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
 .ms-steps { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
-.ms-step { display: flex; align-items: flex-start; gap: 14px; font-size: 0.9rem; }
+.ms-step { display: flex; align-items: flex-start; gap: 14px; font-size: 16pt; font-family: 'Sarabun', sans-serif; }
 .ms-step-num { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--forest-light); color: var(--forest); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
 html.dark .ms-step-num { border-color: #a855f7; color: #c084fc; }
 
@@ -1833,17 +1842,18 @@ html.dark .ms-step-num { border-color: #a855f7; color: #c084fc; }
 html.dark .ms-tip-card.safety { background: rgba(239,68,68,0.1); }
 html.dark .ms-tip-card.culture { background: rgba(245,158,11,0.1); }
 html.dark .ms-tip-card.facility { background: rgba(59,130,246,0.1); }
-.ms-tip-title { font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; }
-.ms-tip-card p { margin: 0; font-size: 0.86rem; line-height: 1.55; }
+.ms-tip-title { font-weight: 700; margin-bottom: 6px; font-size: 16pt; font-family: 'Sarabun', sans-serif; }
+.ms-tip-card p { margin: 0; font-size: 15pt; line-height: 1.6; font-family: 'Sarabun', sans-serif; }
 
-.ms-footer { text-align: center; padding: 20px 0 0; border-top: 1px solid var(--forest-pale); margin-top: 12px; font-size: 0.82rem; color: var(--text-muted); }
+.ms-footer { text-align: center; padding: 20px 0 0; border-top: 1px solid var(--forest-pale); margin-top: 12px; font-size: 13pt; color: var(--text-muted); font-family: 'Sarabun', sans-serif; }
 html.dark .ms-footer { border-top-color: rgba(168,85,247,0.15); }
 
 /* ── Print styles ── */
 @media print {
   .manual-overlay, .manual-header { display: none !important; }
   .manual-body { overflow: visible !important; }
-  .ms-wrap { padding: 0; }
+  .ms-wrap { padding: 0; font-size: 16pt; font-family: 'Sarabun', sans-serif; }
+  .ms-heading { font-size: 18pt; }
   body, html { background: white !important; }
 }
 
@@ -1853,7 +1863,7 @@ html.dark .ms-footer { border-top-color: rgba(168,85,247,0.15); }
   .manual-header { padding: 12px 14px; flex-wrap: wrap; }
   .manual-title { font-size: 0.9rem; }
   .manual-subtitle { display: none; }
-  .ms-wrap { padding: 16px 14px 32px; }
+  .ms-wrap { padding: 16px 14px 32px; font-size: 14pt; }
   .ob-modal { padding: 24px 18px 20px; border-radius: 20px; }
   .ob-title { font-size: 1.15rem; }
 }
