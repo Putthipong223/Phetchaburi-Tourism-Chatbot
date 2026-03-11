@@ -24,7 +24,7 @@ function ManualContentTH() {
     <div className="ms-wrap">
       <div className="ms-cover">
         <div className="ms-cover-badge">เวอร์ชัน 1.0 | มีนาคม 2568</div>
-        <p className="ms-cover-desc">เอกสารฉบับนี้อธิบายการใช้งานระบบน้องเพชร ซึ่งเป็นระบบแชทบอท AI สำหรับการท่องเที่ยวจังหวัดเพชรบุรีและอำเภอหัวหิน พัฒนาด้วยเทคโนโลยี Gemini API</div>
+        <p className="ms-cover-desc">เอกสารฉบับนี้อธิบายการใช้งานระบบน้องเพชร ซึ่งเป็นระบบแชทบอท AI สำหรับการท่องเที่ยวจังหวัดเพชรบุรีและอำเภอหัวหิน พัฒนาด้วยเทคโนโลยี Gemini API</p>
       </div>
 
       <ManualSection icon="🎯" title="วัตถุประสงค์">
