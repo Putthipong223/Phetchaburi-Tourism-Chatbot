@@ -1335,39 +1335,34 @@ export default function App() {
     return ()=>el.removeEventListener('scroll', onScroll);
   }, []);
 
-  // ── Mobile Keyboard / Viewport fix (iOS Safari + Android Chrome) ──
+  // ── Mobile Keyboard / Viewport fix — iOS Safari + Android Chrome ──
   useEffect(()=>{
-    const root = document.documentElement;
+    const html = document.documentElement;
 
     const update = ()=>{
       const vv = window.visualViewport;
-      if (vv) {
-        // True visible height (shrinks when keyboard opens)
-        root.style.setProperty('--app-h', vv.height + 'px');
-        // Compensate iOS scroll-up when keyboard opens
-        // visualViewport.offsetTop > 0 means browser scrolled body upward
-        const offset = vv.offsetTop || 0;
-        root.style.setProperty('--vv-offset', `-${offset}px`);
-        // Mark keyboard state for CSS
-        if (vv.height < window.innerHeight * 0.75) {
-          root.setAttribute('data-kb', '1');
-        } else {
-          root.removeAttribute('data-kb');
-        }
+      const h  = vv ? vv.height : window.innerHeight;
+      html.style.setProperty('--app-h', h + 'px');
+
+      // Mark keyboard state: true if visible area < 75% of full screen height
+      // Works on both iOS (visualViewport shrinks) and Android (innerHeight shrinks)
+      const isKeyboard = h < window.screen.height * 0.75;
+      if (isKeyboard) {
+        html.setAttribute('data-kb', '');
       } else {
-        root.style.setProperty('--app-h', window.innerHeight + 'px');
-        root.style.setProperty('--vv-offset', '0px');
+        html.removeAttribute('data-kb');
       }
     };
 
     update();
-    window.visualViewport?.addEventListener('resize', update, { passive: true });
-    window.visualViewport?.addEventListener('scroll', update, { passive: true });
+    const vv = window.visualViewport;
+    vv?.addEventListener('resize', update, { passive: true });
+    vv?.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
-    window.addEventListener('orientationchange', ()=>setTimeout(update, 100));
-    return ()=>{
-      window.visualViewport?.removeEventListener('resize', update);
-      window.visualViewport?.removeEventListener('scroll', update);
+    window.addEventListener('orientationchange', () => setTimeout(update, 200));
+    return () => {
+      vv?.removeEventListener('resize', update);
+      vv?.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
   }, []);

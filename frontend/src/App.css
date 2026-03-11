@@ -28,22 +28,21 @@
   --grad-accent:   linear-gradient(135deg,#7c3aed 0%,#ec4899 100%);
 }
 
-html { height: 100%; }
+html { height: 100%; overflow: hidden; }
 body {
-  /* position:fixed prevents iOS rubber-band scroll when keyboard opens */
+  /* position:fixed stops iOS from scrolling page when keyboard opens */
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
   overflow: hidden;
   font-family: 'Sarabun', sans-serif;
   background: var(--forest-bg); color: var(--text-dark);
 }
 #root {
-  /* translateY compensates for iOS scroll offset when keyboard appears */
+  /* JS sets --app-h = visualViewport.height (shrinks when keyboard opens) */
   height: var(--app-h, 100dvh);
-  transform: translateY(var(--vv-offset, 0px));
+  width: 100%;
   overflow: hidden;
-  /* Smooth transition for keyboard open/close */
-  transition: height 0.12s ease, transform 0.12s ease;
-  will-change: height, transform;
+  will-change: height;
 }
 
 html.dark {
@@ -507,29 +506,23 @@ html.dark .quota-notice p { color: #d4a800; }
   .input-section {
     position: relative;
     flex-shrink: 0;
-    /* When keyboard open (data-kb=1), no safe-area inset needed — keyboard replaces it */
     padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
     background: rgba(255,255,255,0.97);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-top: 1px solid rgba(91,33,182,0.08);
-    transition: padding 0.12s ease;
   }
-  /* When keyboard open — remove bottom safe-area (keyboard covers it anyway) */
-  [data-kb="1"] .input-section {
-    padding-bottom: 8px;
-  }
+  /* Keyboard open: bottom safe-area already consumed by keyboard — remove it */
+  html[data-kb] .input-section { padding-bottom: 10px; }
   html.dark .input-section { background: rgba(20,10,40,0.97); }
 
   /* messages-area normal padding (input is in flex flow now) */
   .messages-area {
     padding-bottom: 8px !important;
-    /* Smooth resize when keyboard opens */
-    transition: flex 0.12s ease;
-  /* ── Keyboard open state — hide non-essential chrome ── */
-  [data-kb="1"] .topbar-title { font-size: 0.82rem; }
-  [data-kb="1"] .quick-menu-bar { display: none; }
-
   }
+
+  /* ── Keyboard open: hide non-essential chrome to save space ── */
+  html[data-kb] .quick-menu-bar { display: none; }
+  html[data-kb] .topbar-shrink .topbar-title { font-size: 0.8rem; }
 
   .input-box {
     border-radius: 26px;
