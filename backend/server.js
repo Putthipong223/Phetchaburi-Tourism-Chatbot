@@ -2,8 +2,154 @@ const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
+
+// ─────────────────────────────────────────────
+// LOCAL DATA — โหลด data.json
+// ─────────────────────────────────────────────
+let LOCAL_DATA = { restaurants: [], attractions: [], hotels: [] };
+try {
+  const dataPath = path.join(__dirname, 'data.json');
+  LOCAL_DATA = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+  console.log(`📦 data.json loaded: ${LOCAL_DATA.restaurants.length} restaurants, ${LOCAL_DATA.attractions.length} attractions, ${LOCAL_DATA.hotels.length} hotels`);
+} catch(e) {
+  console.warn('⚠️  data.json not found or invalid, using BASE_PROMPT only');
+}
+
+// ─────────────────────────────────────────────
+// LOCAL SEARCH — ค้นหาข้อมูลตรงจาก data.json
+// ─────────────────────────────────────────────
+function searchLocalData(query, lang = 'th') {
+  if (!query) return null;
+  const q = query.toLowerCase();
+
+  // ตรวจว่า query เกี่ยวกับอะไร
+  const isFood       = /อาหาร|ร้าน|กิน|เมนู|ก๋วยเตี๋ยว|ซีฟู้ด|คาเฟ่|กาแฟ|ขนม|ของกิน|สตรีทฟู้ด|food|eat|restaurant|cafe|noodle|seafood|dessert|吃|餐厅|美食|小吃|咖啡/.test(q);
+  const isAttraction = /ที่เที่ยว|สถานที่|วัด|อุทยาน|ถ้ำ|วัง|ตลาด|สวน|attraction|temple|park|cave|palace|market|景点|寺庙|公园/.test(q);
+  const isHotel      = /ที่พัก|โรงแรม|รีสอร์ท|โฮมสเตย์|hotel|resort|homestay|sleep|stay|住宿|酒店|度假村/.test(q);
+  const isHuaHin     = /หัวหิน|hua hin|华欣/.test(q);
+  const isPhet       = /เพชรบุรี|ชะอำ|phetchaburi|cha.?am|碧武里|七岩/.test(q);
+
+  const results = { restaurants: [], attractions: [], hotels: [] };
+  let found = false;
+
+  const scoreItem = (item, query) => {
+    let score = 0;
+    const qLower = query.toLowerCase();
+    if (item.name?.toLowerCase().includes(qLower)) score += 10;
+    if (item.nameEn?.toLowerCase().includes(qLower)) score += 8;
+    if (item.nameZh?.toLowerCase().includes(qLower)) score += 8;
+    if (item.keywords) {
+      item.keywords.forEach(k => {
+        if (qLower.includes(k.toLowerCase()) || k.toLowerCase().includes(qLower)) score += 3;
+      });
+    }
+    if (item.menu?.toLowerCase().includes(qLower)) score += 4;
+    if (item.desc?.toLowerCase().includes(qLower)) score += 2;
+    if (item.type?.toLowerCase().includes(qLower)) score += 3;
+    return score;
+  };
+;
+
+  const allTokens = q.split(/\s+/).filter(t => t.length > 1);
+
+  if (isFood || (!isAttraction && !isHotel)) {
+    const scored = LOCAL_DATA.restaurants
+      .map(r => ({ ...r, _score: allTokens.reduce((s,t) => s + scoreItem(r,t), 0) + scoreItem(r, q) }))
+      .filter(r => r._score > 0 || (!isAttraction && !isHotel && isFood));
+
+    // กรองตามเมือง
+    let filtered = scored;
+    if (isHuaHin && !isPhet) filtered = scored.filter(r => r.city === 'หัวหิน' || r.city === 'ชะอำ');
+    if (isPhet && !isHuaHin) filtered = scored.filter(r => r.city === 'เพชรบุรี' || r.city === 'ชะอำ');
+
+    const top = (filtered.length > 0 ? filtered : scored)
+      .sort((a,b) => b._score - a._score)
+      .slice(0, 6);
+
+    if (top.length > 0) { results.restaurants = top; found = true; }
+  }
+
+  if (isAttraction) {
+    const scored = LOCAL_DATA.attractions
+      .map(a => ({ ...a, _score: allTokens.reduce((s,t) => s + scoreItem(a,t), 0) + scoreItem(a, q) }))
+      .filter(a => a._score > 0);
+
+    let filtered = scored;
+    if (isHuaHin && !isPhet) filtered = scored.filter(a => a.city === 'หัวหิน' || a.city === 'ชะอำ');
+    if (isPhet && !isHuaHin) filtered = scored.filter(a => a.city === 'เพชรบุรี');
+
+    const top = (filtered.length > 0 ? filtered : scored).sort((a,b) => b._score - a._score).slice(0, 5);
+    if (top.length > 0) { results.attractions = top; found = true; }
+  }
+
+  if (isHotel) {
+    const scored = LOCAL_DATA.hotels
+      .map(h => ({ ...h, _score: allTokens.reduce((s,t) => s + scoreItem(h,t), 0) + scoreItem(h, q) }));
+
+    let filtered = scored;
+    if (isHuaHin && !isPhet) filtered = scored.filter(h => h.city === 'หัวหิน');
+    if (isPhet && !isHuaHin) filtered = scored.filter(h => h.city === 'เพชรบุรี' || h.city === 'ชะอำ');
+
+    const top = (filtered.length > 0 ? filtered : scored).sort((a,b) => b._score - a._score).slice(0, 4);
+    if (top.length > 0) { results.hotels = top; found = true; }
+  }
+
+  if (!found) return null;
+  return results;
+}
+
+// สร้าง context string จากผลการค้นหา
+function buildLocalContext(results, lang = 'th') {
+  if (!results) return '';
+  const parts = [];
+
+  const nameField = lang === 'zh' ? 'nameZh' : lang === 'en' ? 'nameEn' : 'name';
+  const descField = lang === 'zh' ? 'descZh' : 'desc';
+  const menuField = lang === 'zh' ? 'menuZh' : 'menu';
+
+  if (results.restaurants?.length > 0) {
+    parts.push('🍽️ VERIFIED LOCAL RESTAURANTS (use these specific names and prices):');
+    results.restaurants.forEach(r => {
+      const nm = r[nameField] || r.name;
+      const mn = r[menuField] || r.menu;
+      parts.push(`  • ${nm} (${r.city}) — ${mn} — ${r.price}/${r.priceCNY}/${r.priceUSD} — ${r.hours} — Maps: ${r.mapsUrl}`);
+    });
+  }
+
+  if (results.attractions?.length > 0) {
+    parts.push('🏛️ VERIFIED ATTRACTIONS:');
+    results.attractions.forEach(a => {
+      const nm = a[nameField] || a.name;
+      const ds = a[descField] || a.desc;
+      parts.push(`  • ${nm} (${a.city}) — ${ds} — Entry: ${a.entryForeign} — ${a.hours} — Maps: ${a.mapsUrl}`);
+    });
+  }
+
+  if (results.hotels?.length > 0) {
+    parts.push('🏨 VERIFIED HOTELS:');
+    results.hotels.forEach(h => {
+      const nm = h[nameField] || h.name;
+      const ds = h[descField] || h.desc;
+      parts.push(`  • ${nm} (${h.city}) — ${ds} — ${h.price}/${h.priceCNY}/${h.priceUSD} — Maps: ${h.mapsUrl}`);
+    });
+  }
+
+  if (parts.length === 0) return '';
+
+  return `
+
+══════════════════════════════════════════
+📦 LOCAL DATABASE — PRIORITY DATA (Verified)
+══════════════════════════════════════════
+CRITICAL: You MUST use the following verified local data. Do NOT invent alternatives.
+Always mention the specific restaurant/place names listed here. Never say "go look around the market yourself".
+${parts.join('\n')}
+══════════════════════════════════════════`;
+}
 app.use(cors({
   origin: function(origin, callback) {
     const allowed = ['http://localhost:3000','http://localhost:5173'];
@@ -321,7 +467,10 @@ Current season in Phetchaburi: ${
       'Rainy/Green Season (หน้าฝน) — Lush nature, cheaper prices, some flooding possible, 26–34°C'
     }
 IMPORTANT: Always give advice based on the current month (${enMonths[month]}), NOT generic advice. If asked about "now" or "this month", use ${enMonths[month]} ${year}.`;
-    const systemInstruction = BASE_PROMPT + dateContext + (LANG_PROMPTS[lang] || LANG_PROMPTS.th);
+    // ── Search local data first ──
+    const localResults = searchLocalData(message, lang);
+    const localContext = buildLocalContext(localResults, lang);
+    const systemInstruction = BASE_PROMPT + dateContext + localContext + (LANG_PROMPTS[lang] || LANG_PROMPTS.th);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction });
     const chat = model.startChat({ history: sessions[sid] });
     const result = await chat.sendMessage(message);
@@ -399,6 +548,18 @@ Requirements:
     res.status(500).json({ errorType: 'server', error: 'server_error' });
   }
 });
+
+// ─────────────────────────────────────────────
+// API: SEARCH LOCAL DATA
+// ─────────────────────────────────────────────
+app.get('/api/search', (req, res) => {
+  const { q, lang = 'th' } = req.query;
+  if (!q) return res.status(400).json({ error: 'query required' });
+  const results = searchLocalData(q, lang);
+  res.json(results || { restaurants: [], attractions: [], hotels: [] });
+});
+
+app.get('/api/data', (req, res) => res.json(LOCAL_DATA));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: '🌸 น้องเพชร — Phetchaburi & Hua Hin AI Guide running!' }));
 
