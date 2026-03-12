@@ -1297,6 +1297,166 @@ function BudgetCalculator({ lang }) {
 
 
 // ══════════════════════════════════════════════
+
+// ══════════════════════════════════════════════
+// MANUAL CONTENT COMPONENTS
+// ══════════════════════════════════════════════
+function ManualSection({icon, title, children}) {
+  return (
+    <div className="ms-section">
+      <h3 className="ms-heading"><span className="ms-icon">{icon}</span>{title}</h3>
+      <div className="ms-body">{children}</div>
+    </div>
+  );
+}
+function ManualTable({rows}) {
+  return (
+    <table className="ms-table">
+      <tbody>{rows.map((r,i)=>(
+        <tr key={i}><td className="ms-td-label">{r[0]}</td><td className="ms-td-val">{r[1]}</td></tr>
+      ))}</tbody>
+    </table>
+  );
+}
+
+function ManualTH() {
+  return (
+    <div className="manual-content">
+      <div className="ms-cover">
+        <img src="/Phetbot_No_bg.png" alt="น้องเพชร" className="ms-cover-logo"/>
+        <h1 className="ms-cover-title">คู่มือการใช้งานระบบ</h1>
+        <h2 className="ms-cover-subtitle">น้องเพชร — ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน</h2>
+        <p className="ms-cover-desc">เอกสารนี้อธิบายการใช้งานระบบแชทบอท AI ผ่าน Gemini API สำหรับนักท่องเที่ยว</p>
+      </div>
+      <ManualSection icon="🎯" title="วัตถุประสงค์">
+        <p>น้องเพชรเป็นระบบแชทบอท AI ที่ออกแบบมาเพื่อช่วยนักท่องเที่ยวชาวจีนวางแผนการท่องเที่ยวในจังหวัดเพชรบุรีและหัวหิน รองรับภาษาไทย อังกฤษ และจีนกลาง (ภาษาเขียนแบบย่อ)</p>
+      </ManualSection>
+      <ManualSection icon="✨" title="ฟีเจอร์หลัก">
+        <ManualTable rows={[
+          ["💬 แชทถามตอบ","ถามข้อมูลท่องเที่ยว สถานที่ อาหาร การเดินทาง ตลอด 24 ชม."],
+          ["📚 วางแผนทริป","สร้างตารางเที่ยวรายวัน ระบุความสนใจและจำนวนวัน"],
+          ["🎪 เทศกาล","ปฏิทินเทศกาลประจำปีของเพชรบุรีและพื้นที่ใกล้เคียง"],
+          ["🏨 ที่พัก","ค้นหาและเปรียบเทียบโรงแรม รีสอร์ท โฮมสเตย์"],
+          ["💰 งบประมาณ","คำนวณค่าใช้จ่ายการเดินทาง ที่พัก อาหาร และค่าเข้าชม"],
+          ["🌐 3 ภาษา","เปลี่ยนภาษาได้ทันทีจากเมนูด้านซ้าย: ไทย / EN / 中文"],
+        ]}/>
+      </ManualSection>
+      <ManualSection icon="📋" title="วิธีใช้งาน">
+        <ol className="ms-steps">
+          <li><strong>เลือกภาษา</strong> — คลิกปุ่มเลือกภาษาในแถบเมนูด้านซ้าย</li>
+          <li><strong>พิมพ์คำถาม</strong> — พิมพ์ในช่องด้านล่าง หรือเลือกจากเมนูด่วน</li>
+          <li><strong>ดูการ์ดสถานที่</strong> — คลิก 🗺️ เพื่อดูแผนที่ หรือ 📍 เพื่อนำทาง</li>
+          <li><strong>วางแผนทริป</strong> — ไปที่แท็บ 📚 กรอกจำนวนวันและความสนใจ</li>
+          <li><strong>บันทึกการสนทนา</strong> — ระบบบันทึกอัตโนมัติ กดดาว ⭐ เพื่อ pin ไว้</li>
+        </ol>
+      </ManualSection>
+      <ManualSection icon="💡" title="คำแนะนำการใช้งาน">
+        <div className="ms-tips">
+          <div className="ms-tip-card safety"><div className="ms-tip-title">🔒 ความปลอดภัย</div><p>บันทึกเบอร์ฉุกเฉิน 1155 (ตำรวจท่องเที่ยว), 191, 1669 ไว้ในโทรศัพท์ก่อนเดินทาง พกสำเนาหนังสือเดินทาง เก็บของมีค่าในตู้เซฟโรงแรม</p></div>
+          <div className="ms-tip-card culture"><div className="ms-tip-title">🙏 มารยาทวัด</div><p>แต่งกายสุภาพ ปิดไหล่ปิดเข่า ถอดรองเท้าก่อนเข้าอาคาร ห้ามชี้เท้าไปที่พระพุทธรูป รักษาความสงบ</p></div>
+          <div className="ms-tip-card facility"><div className="ms-tip-title">🚻 ห้องน้ำ</div><p>แนะนำใช้ห้องน้ำที่ปั๊ม PTT หรือห้างสรรพสินค้า ชายหาดชะอำมีห้องน้ำสาธารณะทุก 500 ม. ชายหาดหัวหินมีห้องน้ำแบบชำระเงิน (5 บาท)</p></div>
+        </div>
+      </ManualSection>
+      <div className="ms-footer">
+        <p>© 2025 น้องเพชร — ระบบ AI ท่องเที่ยวเพชรบุรี–หัวหิน</p>
+        <p className="ms-muted">ราคาและเวลาทำการอาจเปลี่ยนแปลงตามฤดูกาล กรุณาตรวจสอบก่อนเดินทาง</p>
+      </div>
+    </div>
+  );
+}
+
+function ManualEN() {
+  return (
+    <div className="manual-content">
+      <div className="ms-cover">
+        <img src="/Phetbot_No_bg.png" alt="Nong Phet" className="ms-cover-logo"/>
+        <h1 className="ms-cover-title">User Manual</h1>
+        <h2 className="ms-cover-subtitle">Nong Phet — AI Tourism Guide for Phetchaburi & Hua Hin</h2>
+        <p className="ms-cover-desc">This document explains how to use the AI chatbot system powered by Gemini API.</p>
+      </div>
+      <ManualSection icon="🎯" title="Purpose">
+        <p>Nong Phet is an AI chatbot designed to help tourists plan trips to Phetchaburi province and Hua Hin. It supports Thai, English, and Simplified Chinese.</p>
+      </ManualSection>
+      <ManualSection icon="✨" title="Key Features">
+        <ManualTable rows={[
+          ["💬 Chat Q&A","Ask about attractions, food, transport anytime 24/7"],
+          ["📚 Trip Planner","Generate day-by-day itineraries based on your interests"],
+          ["🎪 Festivals","Annual festival calendar for Phetchaburi region"],
+          ["🏨 Accommodation","Search and compare hotels, resorts, homestays"],
+          ["💰 Budget Calc","Estimate costs for transport, hotels, food & entrance fees"],
+          ["🌐 3 Languages","Switch instantly: Thai / English / Chinese from the sidebar"],
+        ]}/>
+      </ManualSection>
+      <ManualSection icon="📋" title="How to Use">
+        <ol className="ms-steps">
+          <li><strong>Select Language</strong> — Click the language selector in the left sidebar</li>
+          <li><strong>Type a Question</strong> — Type in the chat box or pick from the quick menu</li>
+          <li><strong>View Place Cards</strong> — Click 🗺️ to view map or 📍 for navigation</li>
+          <li><strong>Plan a Trip</strong> — Go to 📚 tab, enter days and interests</li>
+          <li><strong>Save Chats</strong> — Chats are auto-saved; star ⭐ to pin important ones</li>
+        </ol>
+      </ManualSection>
+      <ManualSection icon="💡" title="Tips & Advice">
+        <div className="ms-tips">
+          <div className="ms-tip-card safety"><div className="ms-tip-title">🔒 Safety</div><p>Save emergency numbers before traveling: Tourist Police 1155, Emergency 191, Ambulance 1669. Carry passport copies and store valuables in hotel safe.</p></div>
+          <div className="ms-tip-card culture"><div className="ms-tip-title">🙏 Temple Etiquette</div><p>Dress modestly (cover shoulders and knees). Remove shoes before entering temple buildings. Do not point feet toward Buddha images. Stay quiet and respectful.</p></div>
+          <div className="ms-tip-card facility"><div className="ms-tip-title">🚻 Restrooms</div><p>PTT gas stations and shopping malls have clean restrooms. Cha-am beach has public restrooms every 500m. Hua Hin beach has paid restrooms (5 THB).</p></div>
+        </div>
+      </ManualSection>
+      <div className="ms-footer">
+        <p>© 2025 Nong Phet — Phetchaburi & Hua Hin AI Tourism System</p>
+        <p className="ms-muted">Prices and opening hours may vary by season. Please verify before traveling.</p>
+      </div>
+    </div>
+  );
+}
+
+function ManualZH() {
+  return (
+    <div className="manual-content">
+      <div className="ms-cover">
+        <img src="/Phetbot_No_bg.png" alt="小碧" className="ms-cover-logo"/>
+        <h1 className="ms-cover-title">使用手册</h1>
+        <h2 className="ms-cover-subtitle">小碧 — 碧武里–华欣AI旅游助手</h2>
+        <p className="ms-cover-desc">本文档介绍如何使用基于 Gemini API 的AI旅游聊天机器人系统。</p>
+      </div>
+      <ManualSection icon="🎯" title="系统目标">
+        <p>小碧是专为中国游客设计的AI聊天助手，帮助规划碧武里府和华欣的旅行。支持泰语、英语和简体中文。</p>
+      </ManualSection>
+      <ManualSection icon="✨" title="主要功能">
+        <ManualTable rows={[
+          ["💬 智能问答","随时询问景点、美食、交通等旅游信息"],
+          ["📚 行程规划","根据兴趣生成每日详细行程安排"],
+          ["🎪 节日日历","碧武里地区全年节日活动日历"],
+          ["🏨 住宿搜索","搜索比较酒店、度假村、民宿"],
+          ["💰 预算计算","估算交通、住宿、餐饮和门票费用"],
+          ["🌐 三语支持","从侧边栏即时切换：泰语 / English / 中文"],
+        ]}/>
+      </ManualSection>
+      <ManualSection icon="📋" title="使用步骤">
+        <ol className="ms-steps">
+          <li><strong>选择语言</strong> — 点击左侧边栏的语言选择器</li>
+          <li><strong>输入问题</strong> — 在聊天框中输入，或从快捷菜单中选择</li>
+          <li><strong>查看地点卡片</strong> — 点击 🗺️ 查看地图，点击 📍 获取导航</li>
+          <li><strong>规划行程</strong> — 前往 📚 标签，输入天数和兴趣爱好</li>
+          <li><strong>保存对话</strong> — 对话自动保存，点击 ⭐ 收藏重要内容</li>
+        </ol>
+      </ManualSection>
+      <ManualSection icon="💡" title="使用建议">
+        <div className="ms-tips">
+          <div className="ms-tip-card safety"><div className="ms-tip-title">🔒 安全提示</div><p>出发前保存紧急号码：旅游警察1155、紧急情况191、救护车1669。携带护照复印件，贵重物品存放酒店保险箱。</p></div>
+          <div className="ms-tip-card culture"><div className="ms-tip-title">🙏 寺庙礼仪</div><p>进入寺庙需穿着得体（遮肩盖膝），脱鞋后方可入内，禁止用脚指向佛像，保持安静肃穆。</p></div>
+          <div className="ms-tip-card facility"><div className="ms-tip-title">🚻 卫生间</div><p>建议使用PTT加油站或购物中心的卫生间。七岩海滩每500米有公共卫生间。华欣海滩有收费卫生间（5泰铢）。</p></div>
+        </div>
+      </ManualSection>
+      <div className="ms-footer">
+        <p>© 2025 小碧（น้องเพชร）— 碧武里–华欣AI旅游系统</p>
+        <p className="ms-muted">价格和营业时间可能随季节变化，出发前请再次确认。</p>
+      </div>
+    </div>
+  );
+}
+
 // MAIN APP
 // ══════════════════════════════════════════════
 export default function App() {
@@ -1311,6 +1471,9 @@ export default function App() {
   const [showEmergency, setShowEmergency]   = useState(false);
   const [toast, setToast]                 = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(()=>!localStorage.getItem('phet_onboarded'));
+  const [showManual, setShowManual]         = useState(false);
+  const [manualLang, setManualLang]         = useState("th");
   const [sessions, setSessions]           = useState(()=>loadSessions());
   const L = LANGS[lang];
 
@@ -1479,6 +1642,9 @@ export default function App() {
             </div>
             <button className="nav-item" onClick={()=>{setAutoNight(false);setDarkMode(d=>!d);}}>
               <span>{darkMode?"☀️":"🌙"}</span><span className="nav-label">{darkMode?"Light Mode":"Dark Mode"}</span>
+            </button>
+            <button className="nav-item sidebar-manual-btn" onClick={()=>{setManualLang(lang);setShowManual(true);}}>
+              <span>📄</span><span className="nav-label">{L$(lang,"คู่มือการใช้งาน","User Manual","使用手册")}</span>
             </button>
             <button className="nav-item" onClick={()=>setShowAdmin(true)}>
               <span>📊</span><span className="nav-label">Admin</span>
@@ -1748,6 +1914,63 @@ This action cannot be undone.`,
               </a>
             </div>
             <div className="emg-footer">{L$(lang,"บริการฟรีตลอด 24 ชั่วโมง","Free service 24/7","24小时免费服务")}</div>
+          </div>
+        </div>
+      )}
+
+      {/* ══ ONBOARDING MODAL ══ */}
+      {showOnboarding&&(
+        <div className="modal-overlay onboarding-overlay" onClick={()=>{setShowOnboarding(false);localStorage.setItem('phet_onboarded','1');}}>
+          <div className="onboarding-modal" onClick={e=>e.stopPropagation()}>
+            <div className="ob-header">
+              <img src={PHETBOT_LOGO} alt="น้องเพชร" className="ob-avatar"/>
+              <h2 className="ob-title">{L$(lang,"สวัสดีค่ะ! ฉันชื่อน้องเพชร 👋","Hi! I'm Nong Phet 👋","你好！我是小碧 👋")}</h2>
+              <p className="ob-subtitle">{L$(lang,"ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน","AI Tourism Guide for Phetchaburi & Hua Hin","碧武里–华欣AI旅游助手")}</p>
+            </div>
+            <div className="ob-features">
+              {[
+                {icon:"💬",th:"ถามตอบได้ทุกเรื่องเกี่ยวกับเพชรบุรีและหัวหิน",en:"Ask anything about Phetchaburi & Hua Hin",zh:"询问碧武里和华欣的任何问题"},
+                {icon:"📚",th:"วางแผนการเที่ยวพร้อมตารางวันต่อวัน",en:"Plan trips with day-by-day itineraries",zh:"规划行程，含每日详细安排"},
+                {icon:"🏨",th:"ค้นหาที่พัก ร้านอาหาร สถานที่ท่องเที่ยว",en:"Find hotels, restaurants & attractions",zh:"查找住宿、餐厅和景点"},
+                {icon:"💰",th:"คำนวณงบประมาณการเดินทาง",en:"Calculate your travel budget",zh:"计算旅行预算"},
+                {icon:"🌐",th:"รองรับ 3 ภาษา: ไทย อังกฤษ จีน",en:"Supports Thai, English & Chinese",zh:"支持泰语、英语和中文"},
+              ].map((f,i)=>(
+                <div key={i} className="ob-feature">
+                  <span className="ob-feature-icon">{f.icon}</span>
+                  <span className="ob-feature-text">{L$(lang,f.th,f.en,f.zh)}</span>
+                </div>
+              ))}
+            </div>
+            <button className="ob-start-btn" onClick={()=>{setShowOnboarding(false);localStorage.setItem('phet_onboarded','1');}}>
+              {L$(lang,"เริ่มใช้งานเลย! 🌸","Get Started! 🌸","开始使用！🌸")}
+            </button>
+            <p className="ob-skip" onClick={()=>{setShowOnboarding(false);localStorage.setItem('phet_onboarded','1');}}>
+              {L$(lang,"ข้ามไปก่อน","Skip","跳过")}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ══ USER MANUAL MODAL ══ */}
+      {showManual&&(
+        <div className="modal-overlay manual-overlay" onClick={()=>setShowManual(false)}>
+          <div className="manual-modal" onClick={e=>e.stopPropagation()}>
+            <div className="manual-header">
+              <div className="manual-lang-tabs">
+                {[{code:"th",label:"🇹🇭 ไทย"},{code:"en",label:"🇬🇧 EN"},{code:"zh",label:"🇨🇳 中文"}].map(l=>(
+                  <button key={l.code} className={`manual-lang-tab${manualLang===l.code?" active":""}`} onClick={()=>setManualLang(l.code)}>{l.label}</button>
+                ))}
+              </div>
+              <div className="manual-header-actions">
+                <button className="manual-print-btn" onClick={()=>window.print()}>🖨️ {L$(manualLang,"พิมพ์","Print","打印")}</button>
+                <button className="manual-close-btn" onClick={()=>setShowManual(false)}>✕</button>
+              </div>
+            </div>
+            <div className="manual-body">
+              {manualLang==="th"&&<ManualTH/>}
+              {manualLang==="en"&&<ManualEN/>}
+              {manualLang==="zh"&&<ManualZH/>}
+            </div>
           </div>
         </div>
       )}
