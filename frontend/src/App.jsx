@@ -1,3 +1,6 @@
+import { useState, useRef, useEffect, useCallback } from "react";
+import "./App.css";
+
 // ══════════════════════════════════════════════
 // MANUAL CONTENT COMPONENTS (3 languages)
 // ══════════════════════════════════════════════
