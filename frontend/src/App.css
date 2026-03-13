@@ -1787,6 +1787,10 @@ html.dark .manual-modal { background: #0d0a1e; }
 .manual-body {
   flex: 1; overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  padding: 24px 28px 40px;
+}
+@media (max-width: 600px) {
+  .manual-body { padding: 16px 16px 32px; }
 }
 
 /* ── Manual Section Components ── */
@@ -1927,7 +1931,7 @@ html.dark .ob-feature-text { color: #e9d5ff; }
 .manual-lang-tab.active { background: white; color: #5b21b6; border-color: white; }
 
 /* ══ MANUAL CONTENT ══ */
-.manual-content { padding: 4px 0 16px; }
+.manual-content { padding: 0; max-width: 640px; margin: 0 auto; }
 .ms-cover { text-align: center; padding: 20px 0 28px; border-bottom: 2px solid #ede9fe; margin-bottom: 24px; }
 html.dark .ms-cover { border-bottom-color: rgba(168,85,247,0.2); }
 .ms-cover-logo { width: 64px; height: 64px; object-fit: contain; margin-bottom: 12px; }
@@ -1983,3 +1987,76 @@ html.dark .ms-footer { border-top-color: rgba(168,85,247,0.2); }
   .manual-modal { box-shadow: none; max-width: 100%; border-radius: 0; }
   .manual-body { overflow: visible !important; max-height: none !important; }
 }
+
+/* ══════════════════════════════════════════════
+   ONBOARDING STEP-BY-STEP (v2)
+══════════════════════════════════════════════ */
+.ob-close-x {
+  position: absolute; top: 12px; right: 14px;
+  background: none; border: none; font-size: 1.1rem;
+  color: #9ca3af; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+  transition: background 0.15s;
+}
+.ob-close-x:hover { background: #f3f4f6; color: #374151; }
+html.dark .ob-close-x:hover { background: rgba(255,255,255,0.1); color: #e9d5ff; }
+
+.onboarding-modal { position: relative; }
+
+.ob-step-icon { font-size: 3rem; margin-bottom: 10px; line-height: 1; }
+
+.ob-desc {
+  font-size: 0.92rem; color: #4b5563; line-height: 1.7;
+  margin: 10px 0 20px; text-align: center; padding: 0 4px;
+}
+html.dark .ob-desc { color: #c4b5fd; }
+
+.ob-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+.ob-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #d1d5db; cursor: pointer; transition: all 0.2s;
+}
+.ob-dot.active { background: #7c3aed; transform: scale(1.3); }
+html.dark .ob-dot { background: #4b5563; }
+html.dark .ob-dot.active { background: #a855f7; }
+
+.ob-nav-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.ob-next-btn {
+  flex: 1; padding: 12px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg,#7c3aed,#ec4899);
+  color: white; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s;
+}
+.ob-next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
+.ob-back-btn {
+  padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px;
+  background: white; color: #374151; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.ob-back-btn:hover { border-color: #7c3aed; color: #7c3aed; }
+html.dark .ob-back-btn { background: rgba(255,255,255,0.08); border-color: rgba(168,85,247,0.3); color: #e9d5ff; }
+
+/* ══════════════════════════════════════════════
+   MANUAL — ตัวหนา / Bold text
+══════════════════════════════════════════════ */
+.manual-content { font-weight: 600; }
+.ms-body p { font-weight: 600; }
+.ms-steps li { font-weight: 600; }
+.ms-td-val { font-weight: 700; }
+.ms-tip-card p { font-weight: 600; }
+.ms-cover-desc { font-weight: 700; }
+.ms-cover-subtitle { font-weight: 800; }
+.ms-heading { font-weight: 800; font-size: 1.05rem; }
+.ms-footer p { font-weight: 600; }
+
+/* ══ MOBILE DRAWER ADDITIONS ══ */
+.mob-manual-btn { color: #a78bfa !important; }
+.mob-clear-btn { color: #f87171 !important; }
+.mob-hist-star {
+  background: none; border: none; cursor: pointer;
+  font-size: 1rem; padding: 0 4px; flex-shrink: 0;
+  color: #9ca3af; transition: transform 0.15s;
+}
+.mob-hist-star:hover { transform: scale(1.2); }
+.mob-hist-star.starred { color: #f59e0b; }
+.mob-drawer-history { display: flex; align-items: center; gap: 4px; }
+.mob-hist-load { flex: 1; min-width: 0; }

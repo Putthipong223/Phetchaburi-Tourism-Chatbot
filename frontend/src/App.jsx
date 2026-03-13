@@ -1471,7 +1471,8 @@ export default function App() {
   const [showEmergency, setShowEmergency]   = useState(false);
   const [toast, setToast]                 = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(()=>!localStorage.getItem('phet_onboarded'));
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [obStep, setObStep] = useState(0);
   const [showManual, setShowManual]         = useState(false);
   const [manualLang, setManualLang]         = useState("th");
   const [sessions, setSessions]           = useState(()=>loadSessions());
@@ -1809,9 +1810,12 @@ export default function App() {
               <div className="mob-drawer-section">{L$(lang,"ประวัติแชท","History","历史")}</div>
               {sessions.slice(0,5).map(sess=>(
                 <div key={sess.id} className="mob-drawer-history">
+                  <button className={`mob-hist-star${sess.starred?" starred":""}`}
+                    onClick={()=>{toggleStar(sess.id);setSessions(loadSessions());}}>
+                    {sess.starred?"⭐":"☆"}
+                  </button>
                   <button className="mob-drawer-item mob-hist-load"
                     onClick={()=>{setMessages(sess.messages);setActiveTab("chat");setMobileMenuOpen(false);}}>
-                    <span className="mob-drawer-icon">💬</span>
                     <span className="mob-hist-title">{sess.title}</span>
                   </button>
                   <button className="mob-hist-del"
@@ -1840,6 +1844,26 @@ export default function App() {
                 </select>
               </div>
             </div>
+
+            {/* คู่มือการใช้งาน */}
+            <button className="mob-drawer-item mob-manual-btn" onClick={()=>{setManualLang(lang);setShowManual(true);setMobileMenuOpen(false);}}>
+              <span className="mob-drawer-icon">📄</span>
+              <span>{L$(lang,"คู่มือการใช้งาน","User Manual","使用手册")}</span>
+            </button>
+
+            {/* Admin */}
+            <button className="mob-drawer-item" onClick={()=>{setShowAdmin(true);setMobileMenuOpen(false);}}>
+              <span className="mob-drawer-icon">📊</span>
+              <span>Admin Dashboard</span>
+            </button>
+
+            {/* Clear all chats */}
+            {sessions.length>0&&(
+              <button className="mob-drawer-item mob-clear-btn" onClick={()=>{setDeleteModal("all");setMobileMenuOpen(false);}}>
+                <span className="mob-drawer-icon">🗑️</span>
+                <span>{L$(lang,"ลบแชททั้งหมด","Clear All Chats","清除全部对话")}</span>
+              </button>
+            )}
           </aside>
         </div>
       )}
@@ -1918,38 +1942,72 @@ This action cannot be undone.`,
         </div>
       )}
 
-      {/* ══ ONBOARDING MODAL ══ */}
-      {showOnboarding&&(
-        <div className="modal-overlay onboarding-overlay" onClick={()=>{setShowOnboarding(false);localStorage.setItem('phet_onboarded','1');}}>
-          <div className="onboarding-modal" onClick={e=>e.stopPropagation()}>
-            <div className="ob-header">
-              <img src={PHETBOT_LOGO} alt="น้องเพชร" className="ob-avatar"/>
-              <h2 className="ob-title">{L$(lang,"สวัสดีค่ะ! ฉันชื่อน้องเพชร 👋","Hi! I'm Nong Phet 👋","你好！我是小碧 👋")}</h2>
-              <p className="ob-subtitle">{L$(lang,"ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน","AI Tourism Guide for Phetchaburi & Hua Hin","碧武里–华欣AI旅游助手")}</p>
-            </div>
-            <div className="ob-features">
-              {[
-                {icon:"💬",th:"ถามตอบได้ทุกเรื่องเกี่ยวกับเพชรบุรีและหัวหิน",en:"Ask anything about Phetchaburi & Hua Hin",zh:"询问碧武里和华欣的任何问题"},
-                {icon:"📚",th:"วางแผนการเที่ยวพร้อมตารางวันต่อวัน",en:"Plan trips with day-by-day itineraries",zh:"规划行程，含每日详细安排"},
-                {icon:"🏨",th:"ค้นหาที่พัก ร้านอาหาร สถานที่ท่องเที่ยว",en:"Find hotels, restaurants & attractions",zh:"查找住宿、餐厅和景点"},
-                {icon:"💰",th:"คำนวณงบประมาณการเดินทาง",en:"Calculate your travel budget",zh:"计算旅行预算"},
-                {icon:"🌐",th:"รองรับ 3 ภาษา: ไทย อังกฤษ จีน",en:"Supports Thai, English & Chinese",zh:"支持泰语、英语和中文"},
-              ].map((f,i)=>(
-                <div key={i} className="ob-feature">
-                  <span className="ob-feature-icon">{f.icon}</span>
-                  <span className="ob-feature-text">{L$(lang,f.th,f.en,f.zh)}</span>
+      {/* ══ ONBOARDING MODAL — step-by-step ══ */}
+      {showOnboarding&&(()=>{
+        const OB_STEPS = [
+          {
+            icon:"💬", tab:null,
+            th:{title:"สวัสดีค่ะ! ฉันชื่อน้องเพชร 👋",sub:"ไกด์ท่องเที่ยว AI เพชรบุรี–หัวหิน",desc:"ถามฉันได้ทุกเรื่องเกี่ยวกับสถานที่ท่องเที่ยว อาหาร การเดินทาง เวลาเปิด-ปิด ราคา และอื่นๆ อีกมากมายค่ะ"},
+            en:{title:"Hi! I'm Nong Phet 👋",sub:"AI Tourism Guide · Phetchaburi & Hua Hin",desc:"Ask me anything: attractions, food, transport, opening hours, prices, local tips — I'm here 24/7!"},
+            zh:{title:"你好！我是小碧 👋",sub:"碧武里–华欣 AI旅游助手",desc:"随时向我询问景点、美食、交通、开放时间、票价等任何旅游问题！"},
+          },
+          {
+            icon:"📚", tab:"planner",
+            th:{title:"📚 วางแผนทริป",sub:"สร้างตารางเที่ยวรายวันอัตโนมัติ",desc:"บอกจำนวนวัน ความสนใจ และเดินทางกับใคร — น้องเพชรจะสร้างแผนเที่ยวพร้อมสถานที่ อาหาร และที่พักให้เลยค่ะ"},
+            en:{title:"📚 Trip Planner",sub:"Auto-generate day-by-day itineraries",desc:"Tell me how many days, your interests and travel group — I'll build a complete itinerary with places, food & hotels!"},
+            zh:{title:"📚 行程规划",sub:"自动生成每日详细行程",desc:"告诉我天数、兴趣爱好和出行人数，小碧将为你生成包含景点、美食和住宿的完整行程！"},
+          },
+          {
+            icon:"🎪", tab:"festival",
+            th:{title:"🎪 เทศกาลและกิจกรรม",sub:"ปฏิทินเทศกาลประจำปี",desc:"ดูเทศกาลสำคัญของเพชรบุรีและหัวหินตลอดทั้งปี เลือกเดือนเพื่อดูรายละเอียดแต่ละเทศกาลได้เลยค่ะ"},
+            en:{title:"🎪 Festivals & Events",sub:"Annual festival calendar",desc:"Browse Phetchaburi & Hua Hin festivals all year round. Tap a month to see event details and highlights!"},
+            zh:{title:"🎪 节日活动",sub:"全年节日活动日历",desc:"浏览碧武里和华欣全年节日活动，点击月份查看每个节日的详细信息！"},
+          },
+          {
+            icon:"🏨", tab:"accom",
+            th:{title:"🏨 ค้นหาที่พัก",sub:"โรงแรม รีสอร์ท โฮมสเตย์",desc:"กรองที่พักตามงบประมาณ ประเภท และทำเล เปรียบเทียบข้อมูลและกดนำทางได้ทันทีค่ะ"},
+            en:{title:"🏨 Find Accommodation",sub:"Hotels, resorts & homestays",desc:"Filter by budget, type and location. Compare details and get directions instantly!"},
+            zh:{title:"🏨 查找住宿",sub:"酒店、度假村和民宿",desc:"按预算、类型和位置筛选住宿，比较详情并即时获取导航！"},
+          },
+          {
+            icon:"💰", tab:"budget",
+            th:{title:"💰 คำนวณงบประมาณ",sub:"ประเมินค่าใช้จ่ายทั้งทริป",desc:"ใส่จำนวนคน จำนวนคืน ประเภทที่พัก อาหาร และการเดินทาง — ระบบจะคำนวณยอดรวมเป็น บาท / หยวน / USD ให้เลยค่ะ"},
+            en:{title:"💰 Budget Calculator",sub:"Estimate your total trip cost",desc:"Input travelers, nights, accommodation, food & transport — get your total in THB, CNY or USD instantly!"},
+            zh:{title:"💰 预算计算器",sub:"估算全程旅行费用",desc:"输入人数、天数、住宿类型、餐饮和交通，即时获得泰铢、人民币或美元的总费用！"},
+          },
+        ];
+        const step = OB_STEPS[obStep];
+        const s = step[lang] || step.th;
+        const isLast = obStep === OB_STEPS.length - 1;
+        const close = ()=>{ setShowOnboarding(false); setObStep(0); };
+        return (
+          <div className="modal-overlay onboarding-overlay" onClick={close}>
+            <div className="onboarding-modal" onClick={e=>e.stopPropagation()}>
+              <button className="ob-close-x" onClick={close}>✕</button>
+              <div className="ob-step-icon">{step.icon}</div>
+              <h2 className="ob-title">{s.title}</h2>
+              <p className="ob-subtitle">{s.sub}</p>
+              <p className="ob-desc">{s.desc}</p>
+              <div className="ob-dots">
+                {OB_STEPS.map((_,i)=>(
+                  <span key={i} className={`ob-dot${i===obStep?" active":""}`} onClick={()=>setObStep(i)}/>
+                ))}
+              </div>
+              {isLast ? (
+                <button className="ob-start-btn" onClick={()=>{ close(); }}>
+                  {L$(lang,"เริ่มใช้งานเลย! 🌸","Get Started! 🌸","开始使用！🌸")}
+                </button>
+              ) : (
+                <div className="ob-nav-row">
+                  {obStep>0&&<button className="ob-back-btn" onClick={()=>setObStep(s=>s-1)}>{L$(lang,"← ก่อนหน้า","← Back","← 上一步")}</button>}
+                  <button className="ob-next-btn" onClick={()=>setObStep(s=>s+1)}>{L$(lang,"ถัดไป →","Next →","下一步 →")}</button>
                 </div>
-              ))}
+              )}
+              <p className="ob-skip" onClick={close}>{L$(lang,"ข้ามทั้งหมด","Skip","跳过")}</p>
             </div>
-            <button className="ob-start-btn" onClick={()=>{setShowOnboarding(false);localStorage.setItem('phet_onboarded','1');}}>
-              {L$(lang,"เริ่มใช้งานเลย! 🌸","Get Started! 🌸","开始使用！🌸")}
-            </button>
-            <p className="ob-skip" onClick={()=>{setShowOnboarding(false);localStorage.setItem('phet_onboarded','1');}}>
-              {L$(lang,"ข้ามไปก่อน","Skip","跳过")}
-            </p>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ══ USER MANUAL MODAL ══ */}
       {showManual&&(
@@ -1962,11 +2020,23 @@ This action cannot be undone.`,
                 ))}
               </div>
               <div className="manual-header-actions">
-                <button className="manual-print-btn" onClick={()=>window.print()}>🖨️ {L$(manualLang,"พิมพ์","Print","打印")}</button>
+                <button className="manual-print-btn" onClick={()=>{
+                  const el = document.getElementById('manual-print-area');
+                  if (!el) return;
+                  const win = window.open('','_blank','width=800,height=600');
+                  win.document.write('<html><head><title>คู่มือน้องเพชร</title>');
+                  win.document.write('<style>body{font-family:'Sarabun',sans-serif;font-size:14pt;padding:32px;color:#111;line-height:1.8;}h1,h2,h3{color:#5b21b6;}table{width:100%;border-collapse:collapse;margin:12px 0;}td{border:1px solid #ddd;padding:8px 10px;}img{max-width:80px;}ol{padding-left:20px;}@media print{body{padding:16px;}}</style>');
+                  win.document.write('</head><body>');
+                  win.document.write(el.innerHTML);
+                  win.document.write('</body></html>');
+                  win.document.close();
+                  win.focus();
+                  setTimeout(()=>win.print(),400);
+                }}>🖨️ {L$(manualLang,"พิมพ์","Print","打印")}</button>
                 <button className="manual-close-btn" onClick={()=>setShowManual(false)}>✕</button>
               </div>
             </div>
-            <div className="manual-body">
+            <div className="manual-body" id="manual-print-area">
               {manualLang==="th"&&<ManualTH/>}
               {manualLang==="en"&&<ManualEN/>}
               {manualLang==="zh"&&<ManualZH/>}
