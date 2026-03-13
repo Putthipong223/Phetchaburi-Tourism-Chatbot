@@ -2025,7 +2025,7 @@ This action cannot be undone.`,
                   if (!el) return;
                   const win = window.open('','_blank','width=800,height=600');
                   win.document.write('<html><head><title>คู่มือน้องเพชร</title>');
-                  win.document.write('<style>body{font-family:'Sarabun',sans-serif;font-size:14pt;padding:32px;color:#111;line-height:1.8;}h1,h2,h3{color:#5b21b6;}table{width:100%;border-collapse:collapse;margin:12px 0;}td{border:1px solid #ddd;padding:8px 10px;}img{max-width:80px;}ol{padding-left:20px;}@media print{body{padding:16px;}}</style>');
+                  win.document.write('<style>body{font-family:Sarabun,sans-serif;font-size:14pt;padding:32px;color:#111;line-height:1.8;}h1,h2,h3{color:#5b21b6;}table{width:100%;border-collapse:collapse;margin:12px 0;}td{border:1px solid #ddd;padding:8px 10px;}img{max-width:80px;}ol{padding-left:20px;}@media print{body{padding:16px;}}</style>');
                   win.document.write('</head><body>');
                   win.document.write(el.innerHTML);
                   win.document.write('</body></html>');
