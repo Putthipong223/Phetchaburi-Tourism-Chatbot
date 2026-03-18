@@ -905,7 +905,13 @@ function AccomFilter({ lang }) {
                       {a.image
                         ? <img src={a.image} alt={a.name} className="accom-card-img" onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}} />
                         : null}
-                      <div className="accom-card-img-placeholder" style={{display:"none"}}>{TYPES[a.type]?.icon}</div>
+                      <div className="accom-card-img-placeholder" style={{display:a.image?"none":"flex"}}>
+                        <div className="accom-placeholder-inner">
+                          <span className="accom-placeholder-icon">{TYPES[a.type]?.icon||"🏨"}</span>
+                          <span className="accom-placeholder-name">{a.name}</span>
+                          <a href={a.mapsUrl} target="_blank" rel="noreferrer" className="accom-placeholder-map">📸 {L$(lang,"ดูรูปใน Maps","Photos on Maps","在地图上查看照片")}</a>
+                        </div>
+                      </div>
                       <span className="accom-type-badge">{TYPES[a.type]?.icon} {L$(lang,TYPES[a.type]?.th,TYPES[a.type]?.en,TYPES[a.type]?.zh)}</span>
                       <span className="accom-loc-badge">{LOCS[a.location]?.icon} {L$(lang,LOCS[a.location]?.th,LOCS[a.location]?.en,LOCS[a.location]?.zh)}</span>
                     </div>
