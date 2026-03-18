@@ -529,8 +529,7 @@ function PlaceCard({ placeKey, lang }) {
         <p className="place-card-desc">{lang==="zh"?(place.descZh||place.desc):lang==="en"?(place.descEn||place.desc):place.desc}</p>
         <div className="place-card-price">💰 {lang==="zh"?(place.price||"").replace("ฟรี","免费").replace("บาท","泰铢"):lang==="en"?(place.price||"").replace("ฟรี","Free").replace("บาท","THB"):place.price}</div>
         <div className="place-card-actions">
-          <button onClick={openMapView}  className="place-card-btn view-btn">🗺️ {L.mapView}</button>
-          <button onClick={openNavigate} className="place-card-btn map-btn">📍 {L.directions}</button>
+          <button onClick={openMapView} className="place-card-btn view-btn">🗺️ {L.mapView}</button>
         </div>
       </div>
     </div>
@@ -925,17 +924,7 @@ function AccomFilter({ lang }) {
                       <p className="accom-desc">{lang==="zh"?a.descZh:lang==="en"?a.descEn:a.desc}</p>
                       <div className="accom-price">฿{a.price.toLocaleString()}<span>{L$(lang,"/คืน","/night","/晚")}</span></div>
                       <div className="accom-btns">
-                        <a href={a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`} target="_blank" rel="noreferrer" className="accom-btn map-view-btn">🗺️ {L$(lang,"ดูแผนที่","View Map","查看地图")}</a>
-                        <button className="accom-btn navigate-btn" onClick={()=>{
-                          if(navigator.geolocation){
-                            navigator.geolocation.getCurrentPosition(
-                              pos=>window.open(`https://www.google.com/maps/dir/?api=1&origin=${pos.coords.latitude},${pos.coords.longitude}&destination=${a.lat||a.coords?.lat||0},${a.lng||a.coords?.lng||0}&travelmode=driving`,"_blank"),
-                              ()=>window.open(a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`,"_blank")
-                            );
-                          } else {
-                            window.open(a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`,"_blank");
-                          }
-                        }}>📍 {L$(lang,"นำทาง","Navigate","导航")}</button>
+                        <a href={a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`} target="_blank" rel="noreferrer" className="accom-btn map-view-btn">🗺️ {L$(lang,"ดูใน Google Maps","View on Google Maps","在谷歌地图查看")}</a>
                       </div>
                     </div>
                   </div>
