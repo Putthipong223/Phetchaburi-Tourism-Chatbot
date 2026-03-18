@@ -497,15 +497,19 @@ function PlaceCard({ placeKey, lang }) {
           const url = `https://www.google.com/maps/dir/?api=1&origin=${pos.coords.latitude},${pos.coords.longitude}&destination=${place.coords.lat},${place.coords.lng}&travelmode=driving`;
           window.open(url,"_blank");
         },
-        () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${place.coords.lat},${place.coords.lng}`,"_blank")
+        () => window.open(place.mapsUrl||`https://www.google.com/maps/dir/?api=1&destination=${place.coords.lat},${place.coords.lng}`,"_blank")
       );
     } else {
-      window.open(`https://www.google.com/maps/dir/?api=1&destination=${place.coords.lat},${place.coords.lng}`,"_blank");
+      window.open(place.mapsUrl||`https://www.google.com/maps/dir/?api=1&destination=${place.coords.lat},${place.coords.lng}`,"_blank");
     }
   };
 
   const openMapView = () => {
-    window.open(`https://www.google.com/maps/search/?api=1&query=${place.coords.lat},${place.coords.lng}`,"_blank");
+    // Use real mapsUrl (shows place page with reviews/prices) or fallback to coords
+    const url = place.mapsUrl && place.mapsUrl !== "https://maps.app.goo.gl/"
+      ? place.mapsUrl
+      : `https://www.google.com/maps/search/?api=1&query=${place.coords.lat},${place.coords.lng}`;
+    window.open(url,"_blank");
   };
 
   return (
@@ -921,8 +925,17 @@ function AccomFilter({ lang }) {
                       <p className="accom-desc">{lang==="zh"?a.descZh:lang==="en"?a.descEn:a.desc}</p>
                       <div className="accom-price">฿{a.price.toLocaleString()}<span>{L$(lang,"/คืน","/night","/晚")}</span></div>
                       <div className="accom-btns">
-                        
-                        <a href={a.booking} target="_blank" rel="noreferrer" className="accom-btn booking-btn">📋 Booking.com</a>
+                        <a href={a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`} target="_blank" rel="noreferrer" className="accom-btn map-view-btn">🗺️ {L$(lang,"ดูแผนที่","View Map","查看地图")}</a>
+                        <button className="accom-btn navigate-btn" onClick={()=>{
+                          if(navigator.geolocation){
+                            navigator.geolocation.getCurrentPosition(
+                              pos=>window.open(`https://www.google.com/maps/dir/?api=1&origin=${pos.coords.latitude},${pos.coords.longitude}&destination=${a.lat||a.coords?.lat||0},${a.lng||a.coords?.lng||0}&travelmode=driving`,"_blank"),
+                              ()=>window.open(a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`,"_blank")
+                            );
+                          } else {
+                            window.open(a.mapsUrl||`https://maps.google.com/maps?q=${encodeURIComponent(a.name)}`,"_blank");
+                          }
+                        }}>📍 {L$(lang,"นำทาง","Navigate","导航")}</button>
                       </div>
                     </div>
                   </div>

@@ -993,11 +993,13 @@ html.dark .accom-name { color:#c084fc; }
 .accom-price span { font-size:0.7rem; font-weight:400; color:var(--text-mid); margin-left:2px; }
 html.dark .accom-price { color:#c084fc; }
 .accom-btns { display:flex; gap:7px; }
-.accom-btn { flex:1; text-align:center; padding:6px 9px; border-radius:7px; font-size:0.73rem; font-weight:700; text-decoration:none; font-family:'Sarabun',sans-serif; transition:all 0.18s; }
-.agoda-btn   { background:#e74c3c; color:white; }
-.agoda-btn:hover { background:#c0392b; }
-.booking-btn { background:#003580; color:white; }
-.booking-btn:hover { background:#001f5c; }
+.accom-btn { flex:1; text-align:center; padding:6px 9px; border-radius:7px; font-size:0.73rem; font-weight:700; text-decoration:none; font-family:'Sarabun',sans-serif; transition:all 0.18s; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px; }
+.map-view-btn { background:#1a73e8; color:white; }
+.map-view-btn:hover { background:#1557b0; transform:translateY(-1px); }
+.navigate-btn { background:#34a853; color:white; }
+.navigate-btn:hover { background:#1e7e34; transform:translateY(-1px); }
+html.dark .map-view-btn { background:#4285f4; }
+html.dark .navigate-btn { background:#2d9e47; }
 
 /* ── Session History ── */
 .history-nav { max-height:180px; overflow-y:auto; }
