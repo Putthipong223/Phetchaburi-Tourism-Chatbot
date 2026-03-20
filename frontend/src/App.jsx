@@ -1604,7 +1604,7 @@ export default function App() {
   useEffect(()=>{ setMessages([{role:"bot",text:LANGS[lang].welcome}]); },[lang]);
   useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:"smooth"}); },[messages,loading]);
 
-  const newChat = () => { setMessages([{role:"bot",text:LANGS[lang].welcome}]); setInput(""); };
+  const newChat = () => { setMessages([{role:"bot",text:LANGS[lang].welcome}]); setInput(""); setActiveTab("chat"); };
 
   const sendMessage = useCallback(async (text) => {
     const userText = text||input.trim();
@@ -1675,7 +1675,7 @@ export default function App() {
             <nav className="sidebar-nav history-nav">
               {sessions.slice(0,8).map(sess=>(
                 <div key={sess.id} className="history-item">
-                  <button className="history-load" onClick={()=>setMessages(sess.messages)}>
+                  <button className="history-load" onClick={()=>{setMessages(sess.messages);setActiveTab("chat");}}>
                     💬 {sess.title}
                   </button>
                   <button className={`history-star ${sess.starred?"starred":""}`}
