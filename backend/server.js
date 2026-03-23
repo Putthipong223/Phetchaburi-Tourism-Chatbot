@@ -152,7 +152,13 @@ ${parts.join('\n')}
 }
 app.use(cors({
   origin: function(origin, callback) {
-    const allowed = ['http://localhost:3000','http://localhost:5173'];
+    const allowed = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://tourphetai.online',
+  'https://www.tourphetai.online',
+  'https://skyblue-shrew-656660.hostingersite.com'
+];
     if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.netlify.app')) {
       callback(null, true);
     } else { callback(null, true); }
